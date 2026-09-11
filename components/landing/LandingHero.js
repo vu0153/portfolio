@@ -28,45 +28,49 @@ export default function LandingHero() {
           </p>
         </div>
 
-        <div className="relative flex flex-col items-center gap-8 sm:gap-4">
+        <div className="relative flex flex-col items-center gap-6 sm:gap-2">
           <h1 className="sr-only">{profile.name}</h1>
 
-          <div className="grid w-full grid-cols-1 items-center gap-6 sm:grid-cols-[1fr_auto_1fr] sm:gap-4">
-            <p
-              aria-hidden
-              className="hidden select-none text-right font-normal leading-[0.85] tracking-[-0.03em] sm:block"
-              style={{ fontSize: "clamp(1.6rem, 1vw + 1.4rem, 3.4rem)" }}
-            >
-              NGOC LONG VU
-            </p>
+          {/* Mobile-only: static, readable name above the portrait (no marquee) */}
+          <div
+            aria-hidden
+            className="flex select-none flex-col items-center gap-1 text-center leading-[0.9] tracking-[-0.03em] sm:hidden"
+            style={{ fontSize: "clamp(1.8rem, 8vw, 2.75rem)" }}
+          >
+            <p>NGOC LONG VU</p>
+            <p>RICKY VU</p>
+          </div>
 
+          <div className="relative flex w-full items-center justify-center">
             <div className="relative mx-auto w-full max-w-[320px] sm:max-w-[380px]">
               <Image
                 src="/photos/ricky-hero.webp"
                 alt={`Portrait of ${profile.shortName}`}
-                width={963}
+                width={1120}
                 height={1400}
                 priority
                 className="h-auto w-full object-cover"
               />
             </div>
 
-            <p
-              aria-hidden
-              className="hidden select-none text-left font-normal leading-[0.85] tracking-[-0.03em] sm:block"
-              style={{ fontSize: "clamp(1.6rem, 1vw + 1.4rem, 3.4rem)" }}
-            >
-              RICKY VU
-            </p>
-          </div>
-
-          <div
-            aria-hidden
-            className="flex select-none flex-col items-center gap-1 leading-[0.9] tracking-[-0.03em] sm:hidden"
-            style={{ fontSize: "clamp(2rem, 9vw, 3rem)" }}
-          >
-            <p>NGOC LONG VU</p>
-            <p>RICKY VU</p>
+            {/* Desktop-only: name drifts slowly on top of the portrait, seamless loop */}
+            <div className="pointer-events-none absolute inset-0 z-10 hidden items-end overflow-hidden pb-6 sm:flex">
+              <div
+                className="marquee-track flex w-max items-center gap-20 whitespace-nowrap font-normal leading-none tracking-[-0.03em] text-white"
+                style={{ fontSize: "clamp(5rem, 2rem + 11vw, 13rem)" }}
+              >
+                <span className="flex shrink-0 items-center gap-20">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <span key={i}>NGOC LONG VU — RICKY VU</span>
+                  ))}
+                </span>
+                <span aria-hidden="true" className="flex shrink-0 items-center gap-20">
+                  {Array.from({ length: 4 }).map((_, i) => (
+                    <span key={`dup-${i}`}>NGOC LONG VU — RICKY VU</span>
+                  ))}
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -78,8 +82,13 @@ export default function LandingHero() {
               className="group flex items-center gap-2 border-b border-transparent pb-1 text-ink transition-colors hover:border-ink"
             >
               <span className="text-muted">{route.number}</span>
-              {route.label}
-              <span aria-hidden className="transition-transform group-hover:translate-x-1">
+              <span className="transition-[letter-spacing] duration-300 group-hover:tracking-[0.04em]">
+                {route.label}
+              </span>
+              <span
+                aria-hidden
+                className="transition-transform duration-300 [transition-timing-function:var(--ease-out)] group-hover:translate-x-1.5"
+              >
                 →
               </span>
             </Link>

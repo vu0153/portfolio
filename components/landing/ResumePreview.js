@@ -1,10 +1,11 @@
 import CircleButton from "./CircleButton";
+import Reveal from "./Reveal";
 import profile from "@/data/profile";
 
 export default function ResumePreview() {
   return (
     <section className="bg-paper px-[var(--page-x)] py-20 text-ink sm:py-32">
-      <div className="mx-auto flex max-w-[1800px] flex-col gap-10">
+      <Reveal className="mx-auto flex max-w-[1800px] flex-col gap-10">
         <div className="flex items-baseline justify-between text-xs tracking-[0.14em] text-muted uppercase">
           <span>Experience</span>
           <span>03 / Resume</span>
@@ -33,7 +34,7 @@ export default function ResumePreview() {
         <div className="flex justify-end">
           <CircleButton href="/about">View full resume</CircleButton>
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

@@ -1,9 +1,10 @@
 import CircleButton from "./CircleButton";
+import Reveal from "./Reveal";
 
 export default function PhotographyPreview() {
   return (
     <section className="bg-paper px-[var(--page-x)] py-20 text-ink sm:py-32">
-      <div className="mx-auto flex max-w-[1800px] flex-col gap-10">
+      <Reveal className="mx-auto flex max-w-[1800px] flex-col gap-10">
         <div className="flex items-baseline justify-between text-xs tracking-[0.14em] text-muted uppercase">
           <span>Selected Images</span>
           <span>02 / Photography</span>
@@ -23,7 +24,7 @@ export default function PhotographyPreview() {
         <div className="flex justify-end">
           <CircleButton href="/photography">View photography</CircleButton>
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

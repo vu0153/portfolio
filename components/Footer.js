@@ -1,4 +1,5 @@
 import profile from "@/data/profile";
+import LocalTime from "./LocalTime";
 
 export default function Footer() {
   return (
@@ -7,6 +8,7 @@ export default function Footer() {
         <p>
           &copy; {new Date().getFullYear()} {profile.name}
         </p>
+        <LocalTime />
         <div className="flex gap-4">
           <a href={`mailto:${profile.contact.email}`} className="hover:underline">
             Email

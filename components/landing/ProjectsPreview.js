@@ -1,4 +1,5 @@
 import CircleButton from "./CircleButton";
+import Reveal from "./Reveal";
 
 const featuredProjects = [
   { title: "Enterprise Network Design and Simulation", category: "Network Infrastructure" },
@@ -18,7 +19,7 @@ const otherProjects = [
 export default function ProjectsPreview() {
   return (
     <section className="bg-paper px-[var(--page-x)] py-20 text-ink sm:py-32">
-      <div className="mx-auto flex max-w-[1800px] flex-col gap-10">
+      <Reveal className="mx-auto flex max-w-[1800px] flex-col gap-10">
         <div className="flex items-baseline justify-between text-xs tracking-[0.14em] text-muted uppercase">
           <span>Selected Work</span>
           <span>01 / Technical</span>
@@ -57,7 +58,7 @@ export default function ProjectsPreview() {
         <div className="flex justify-end">
           <CircleButton href="/projects">View all projects</CircleButton>
         </div>
-      </div>
+      </Reveal>
     </section>
   );
 }

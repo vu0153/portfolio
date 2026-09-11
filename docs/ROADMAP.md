@@ -17,8 +17,8 @@ Tài liệu này là nguồn tham chiếu chính (source of truth) cho tiến đ
 |---|---|
 | A. Hạ tầng & Scaffold | ✅ Xong |
 | B. Nội dung cơ bản (Nav/Footer/About/Contact) | ✅ Xong |
-| C. Trang chủ — Đợt 1 (layout tĩnh) | ✅ Xong, đang chờ bạn xác nhận vài điểm |
-| C. Trang chủ — Đợt 2 (chuyển động cơ bản) | ⬜ Chưa làm |
+| C. Trang chủ — Đợt 1 (layout tĩnh) | ✅ Xong, đã duyệt |
+| C. Trang chủ — Đợt 2 (chuyển động cơ bản) | ✅ Xong toàn bộ — chỉ còn 2 mục chờ ảnh project/photography thật |
 | C. Trang chủ — Đợt 3 (tương tác nâng cao) | ⬜ Chưa làm |
 | D. Các trang con (About/Projects/Photography/Contact) | ⏸️ Tạm dừng — bạn sẽ làm chi tiết từng trang riêng |
 | E. Vận hành / Deploy bản mới | ⬜ Chưa làm |
@@ -76,16 +76,30 @@ Tài liệu này là nguồn tham chiếu chính (source of truth) cho tiến đ
 - [x] Nút tròn đen/accent: kích thước/vị trí được duyệt, giữ nguyên
 - [ ] Ảnh hero vẫn là ảnh thử nghiệm — Ricky sẽ gửi ảnh khác sau
 
-### Đợt 2 — Chuyển động cơ bản — ⬜ Chưa làm
+### Đợt 2 — Chuyển động cơ bản — ✅ Xong (phần không bị chặn), 2 mục hoãn lại
 
-Sẽ làm sau khi Đợt 1 được duyệt. Cụ thể hoá từ video mẫu:
-- Scroll reveal cho từng section khi cuộn tới
-- Nav thu gọn: thanh Nav chữ (Home/About/Projects/...) hiện tại luôn cố định — bản mẫu chỉ hiện link chữ ở đầu trang, sau khi cuộn nhẹ thì **thu lại thành 1 nút tròn hamburger** góc phải, bấm vào mới mở menu overlay toàn màn hình
-- Hiệu ứng hover cho 3 route ở Hero (chữ dãn nhẹ, dịch sang phải)
-- Hover project trong "Selected Work": ảnh thumbnail hiện ra bám theo vị trí con trỏ (không phải cố định), có nút "View" tròn màu accent ở giữa ảnh — **cần ảnh project trước mới làm được phần này**
-- Ảnh phóng nhẹ khi hover (scale 1.0 → 1.025)
-- Tên "RICKY VU" trôi ngang rất chậm (30-60s/vòng, tự tắt nếu bật Reduce Motion)
-- Footer: thêm "Local time" tự cập nhật theo giờ Adelaide (bản mẫu có, hiện site chưa có)
+**Đã làm (2026-09-11):**
+- ✅ Scroll reveal — `components/landing/Reveal.js` (client component, IntersectionObserver), bọc quanh nội dung chính của IntroStatement/ProjectsPreview/PhotographyPreview/ResumePreview/ContactCTA. Tự tắt hoàn toàn khi bật Reduce Motion (CSS `@media (prefers-reduced-motion: reduce) { .reveal { ... !important } }` — nội dung hiện ngay lập tức, không chờ cuộn).
+- ✅ Hiệu ứng hover cho 3 route ở Hero — chữ dãn nhẹ (`letter-spacing`) + mũi tên dịch sang phải khi hover, dùng easing token `--ease-out`.
+- ✅ Footer: thêm "Local time" tự cập nhật theo giờ Adelaide (`components/LocalTime.js`, dùng `Intl.DateTimeFormat` với timezone `Australia/Adelaide`, tự xử lý DST, cập nhật mỗi 30s, không gây lệch hydration SSR/client).
+- **Đã kiểm tra:** cuộn từ từ (giống người dùng thật) → tất cả 5 section hiện đúng, opacity đạt 1. Reduced motion → hiện ngay lập tức, không cần cuộn. Không lỗi console ở cả 2 chế độ. (Lưu ý: test giả lập "nhảy" 1600px trong 1 lần bỏ lỡ 1 section — đây là hạn chế của công cụ test tự động không tạo đủ khung hình trung gian như cuộn tay thật, không phải lỗi thực tế; đã mở rộng `rootMargin` thêm 150px để tăng độ an toàn dù sao.)
+
+**Đã xác nhận và làm tiếp (2026-09-11):**
+- ✅ **Nav thu gọn thành nút tròn hamburger khi cuộn** — áp dụng toàn site (Ricky chọn). `components/Nav.js` viết lại: `sticky top-0`, sau khi cuộn quá 80px thì ẩn link chữ, hiện nút hamburger (giống mobile), bấm mở overlay toàn màn hình (link cỡ lớn, đóng bằng Escape hoặc click lại, khoá scroll nền khi mở). Đã kiểm tra hoạt động đúng trên cả Home và About (trang "tạm dừng") — nhất quán toàn site, không lỗi console.
+- ✅ **Tên trôi ngang kiểu marquee** — Ricky chọn đổi sang marquee thật. Desktop: dòng "NGOC LONG VU — RICKY VU" lặp lại, trôi ngang liên tục seamless (CSS `@keyframes marquee`, 40s/vòng), nằm phía sau ảnh chân dung (portrait đè lên trên, z-index cao hơn). Mobile: giữ tĩnh, xếp 2 dòng "NGOC LONG VU" / "RICKY VU" phía trên ảnh (không marquee, tránh rối mắt trên màn hình nhỏ). Tự tắt animation khi bật Reduce Motion (đã kiểm tra: `animationName` trả về "none").
+- **Sự cố tự phát hiện và sửa:** khi viết lại bố cục cho marquee, bản mobile bị mất dòng "NGOC LONG VU" (chỉ còn "Ricky Vu") — đã phát hiện qua ảnh chụp kiểm tra và sửa lại đủ 2 dòng như bản đã duyệt.
+
+**Sửa thêm sau khi Ricky gửi ảnh chụp bản gốc thật (2026-09-11):**
+- ✅ **Chữ marquee đổi từ "nằm sau ảnh" thành "đè lên trên ảnh"** — đúng như bản gốc (chữ cắt ngang qua người trong ảnh). Dùng kỹ thuật `mix-blend-mode: difference` (màu trắng) để chữ tự đổi độ tương phản theo vùng sáng/tối bên dưới — không cần chọn màu thủ công cho từng vùng ảnh.
+- ✅ **Sửa lỗi font toàn site**: phát hiện `body` trong `globals.css` đang ghi đè về Arial/Helvetica mặc định thay vì dùng font Geist đã tải sẵn (lỗi sót lại từ lúc scaffold, không ai để ý). Đã sửa để Geist áp dụng đúng toàn site — giao diện gần với bản mẫu hơn nhiều (chữ tròn, hiện đại hơn Arial).
+- ✅ **Tăng cỡ chữ marquee lên đúng tỷ lệ bản mẫu** — từ `clamp(2.4rem…5.5rem)` (quá nhỏ, không nổi bật) lên `clamp(5rem, 2rem + 11vw, 13rem)` — đúng bằng thang "display text" mà chính tài liệu thiết kế đề xuất (mục 8.3) nhưng ban đầu chưa dùng tới. Đã kiểm tra ở 1920px và 1440px, chữ không bị cắt, không tràn ngang.
+- ✅ **3 chỉnh sửa theo ảnh chụp thực tế bản mẫu (2026-09-11):** (1) tốc độ marquee chậm lại từ 40s → 90s/vòng; (2) vị trí chữ dịch xuống thấp (dùng `items-end` thay vì `items-center`, cắt ngang qua áo/thân dưới thay vì mặt); (3) bỏ hiệu ứng `mix-blend-difference`, dùng trắng thuần đơn giản — với ảnh nền xám trung tính hiện tại, trắng thuần vẫn đủ tương phản, không cần kỹ thuật blend phức tạp.
+- ✅ **Đổi font chữ toàn site sang General Sans** (2026-09-11) — Ricky thấy Geist "giống Arial, không sang". General Sans (Fontshare, miễn phí kể cả dùng thương mại) là lựa chọn phổ biến trong giới thiết kế portfolio cao cấp, gần với "PP Neue Montreal" (font bản mẫu Dennis Snellenberg dùng nhưng có phí, không dùng được). Đã tải 4 file `.woff2` (Regular/Medium/Semibold/Bold, ~90KB tổng) về tự host tại `fonts/general-sans/`, cấu hình qua `next/font/local` trong `app/layout.js` (không dùng CDN ngoài — nhanh và ổn định hơn). Đã gỡ bỏ Geist Mono (không dùng ở đâu trong code). Xác nhận qua `getComputedStyle` — font áp dụng đúng, không lỗi tải font, build/lint sạch.
+- ✅ **Thay ảnh hero mới** (2026-09-11) — Ricky cung cấp `public/photos/Ricky.png`, một tấm chân dung chuyên nghiệp chụp phông xám (~màu `#849092`, rất gần với `--hero: #8e9494`, không cần tách nền như tấm ảnh thử nghiệm trước). Đã nén xuống WebP (~151KB, giảm từ ~2MB gốc), ghi đè `public/photos/ricky-hero.webp`, xoá file PNG gốc sau khi nén (đúng quy trình đã thống nhất — không giữ ảnh thô nặng trong repo). Ảnh mới tỷ lệ vuông hơn (1120×1400, chân dung bán thân) so với ảnh cũ (963×1400, toàn thân) — đã cập nhật `width`/`height` trong `LandingHero.js` cho khớp. **Đã hỏi Ricky về viền khung ảnh (2026-09-11):** giữ nguyên tạm thời. Ricky sẽ tự chụp 1 tấm ảnh mới trong tương lai theo **hướng ngang/dàn trải rộng** (giống bố cục ảnh của Dennis Snellenberg — ảnh chụp rộng, người không chiếm toàn bộ khung dọc) và **không cần tách nền** — khi có ảnh đó, cần đổi lại tỷ lệ khung hiển thị (`max-w`, `width`/`height` trong `LandingHero.js`) từ dạng dọc (portrait) hiện tại sang dạng ngang (landscape) để khớp bố cục mới.
+
+**Vẫn hoãn — chưa có ảnh thật để làm:**
+- ⏸️ **Hover project → ảnh bám theo con trỏ + nút "View"** — chưa làm được vì chưa có ảnh project thật.
+- ⏸️ **Ảnh phóng nhẹ khi hover** — chưa có ảnh project/photography nào để áp dụng.
 
 ### Đợt 3 — Tương tác nâng cao — ⬜ Chưa làm
 
@@ -139,6 +153,7 @@ Dark mode, blog, CMS, analytics, custom domain, contact-form backend thật, aut
 | 2026-09-11 | Tên hiển thị lớn ở Hero đổi thành "NGOC LONG VU — RICKY VU" (trước đó chỉ "RICKY VU") |
 | 2026-09-11 | Danh sách Projects trên Home có thêm mục "Other Projects" (5 project phụ) ngay sau 4 project chủ đạo |
 | 2026-09-11 | Câu CTA cuối trang: "Let's discuss how I can support your team." (thay cho câu gốc "Have something interesting to discuss?") |
+| 2026-09-11 | Đợt 2: làm scroll reveal, hover route, local time footer, Nav thu gọn toàn site khi cuộn, tên marquee trôi ngang (desktop) — tất cả đã xác nhận và hoàn tất |
 
 ---
 
