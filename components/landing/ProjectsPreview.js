@@ -32,18 +32,18 @@ export default function ProjectsPreview() {
           Technical Projects
         </h2>
 
-        <ul className="flex flex-col divide-y divide-line border-t border-b border-line">
+        <Reveal as="ul" stagger className="flex flex-col divide-y divide-line border-t border-b border-line">
           {featuredProjects.map((project) => (
             <li key={project.title} className="flex flex-col gap-1 py-5 sm:flex-row sm:items-baseline sm:justify-between">
               <span className="text-lg">{project.title}</span>
               <span className="text-sm tracking-[0.02em] text-muted">{project.category}</span>
             </li>
           ))}
-        </ul>
+        </Reveal>
 
         <p className="text-xs tracking-[0.14em] text-muted uppercase">Other Projects</p>
 
-        <ul className="flex flex-col divide-y divide-line border-t border-b border-line">
+        <Reveal as="ul" stagger className="flex flex-col divide-y divide-line border-t border-b border-line">
           {otherProjects.map((project) => (
             <li
               key={project.title}
@@ -53,7 +53,7 @@ export default function ProjectsPreview() {
               <span className="text-sm tracking-[0.02em]">{project.category}</span>
             </li>
           ))}
-        </ul>
+        </Reveal>
 
         <div className="flex justify-end">
           <CircleButton href="/projects">View all projects</CircleButton>

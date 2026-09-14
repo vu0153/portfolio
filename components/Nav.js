@@ -104,39 +104,47 @@ export default function Nav() {
         </button>
       </div>
 
-      {open && (
-        <div className="fixed inset-0 z-40 flex flex-col items-center justify-center gap-6 bg-background">
-          {links.map((link) => {
-            const active = pathname === link.href;
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                aria-current={active ? "page" : undefined}
-                className={`text-4xl font-normal tracking-tight transition-opacity hover:opacity-60 sm:text-6xl ${
-                  active ? "underline underline-offset-8" : ""
-                }`}
-              >
-                {link.label}
-              </Link>
-            );
-          })}
-
-          <div className="absolute bottom-8 flex gap-4 text-sm text-muted">
-            <a href={`mailto:${profile.contact.email}`} className="hover:text-ink">
-              Email
-            </a>
-            <a
-              href={profile.contact.linkedin}
-              target="_blank"
-              rel="noreferrer"
-              className="hover:text-ink"
+      <div
+        className={`fixed inset-0 z-40 flex flex-col items-center justify-center gap-6 bg-background transition-all duration-300 [transition-timing-function:var(--ease-out)] ${
+          open ? "visible scale-100 opacity-100" : "invisible scale-95 opacity-0"
+        }`}
+      >
+        {links.map((link, i) => {
+          const active = pathname === link.href;
+          return (
+            <Link
+              key={link.href}
+              href={link.href}
+              aria-current={active ? "page" : undefined}
+              tabIndex={open ? undefined : -1}
+              style={{
+                transitionDelay: open ? `${i * 40}ms` : "0ms",
+                transitionDuration: "300ms",
+              }}
+              className={`text-4xl font-normal tracking-tight transition-all [transition-timing-function:var(--ease-out)] hover:opacity-60 sm:text-6xl ${
+                open ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0"
+              } ${active ? "underline underline-offset-8" : ""}`}
             >
-              LinkedIn
-            </a>
-          </div>
+              {link.label}
+            </Link>
+          );
+        })}
+
+        <div className="absolute bottom-8 flex gap-4 text-sm text-muted">
+          <a href={`mailto:${profile.contact.email}`} tabIndex={open ? undefined : -1} className="hover:text-ink">
+            Email
+          </a>
+          <a
+            href={profile.contact.linkedin}
+            target="_blank"
+            rel="noreferrer"
+            tabIndex={open ? undefined : -1}
+            className="hover:text-ink"
+          >
+            LinkedIn
+          </a>
         </div>
-      )}
+      </div>
     </header>
   );
 }

@@ -19,7 +19,7 @@ Tài liệu này là nguồn tham chiếu chính (source of truth) cho tiến đ
 | B. Nội dung cơ bản (Nav/Footer/About/Contact) | ✅ Xong |
 | C. Trang chủ — Đợt 1 (layout tĩnh) | ✅ Xong, đã duyệt |
 | C. Trang chủ — Đợt 2 (chuyển động cơ bản) | ✅ Xong toàn bộ — chỉ còn 2 mục chờ ảnh project/photography thật |
-| C. Trang chủ — Đợt 3 (tương tác nâng cao) | ⬜ Chưa làm |
+| C. Trang chủ — Đợt 3 (tương tác nâng cao) | ✅ Xong phần làm được ngay — cursor "VIEW" chờ ảnh project thật |
 | D. Các trang con (About/Projects/Photography/Contact) | ⏸️ Tạm dừng — bạn sẽ làm chi tiết từng trang riêng |
 | E. Vận hành / Deploy bản mới | ⬜ Chưa làm |
 
@@ -101,12 +101,19 @@ Tài liệu này là nguồn tham chiếu chính (source of truth) cho tiến đ
 - ⏸️ **Hover project → ảnh bám theo con trỏ + nút "View"** — chưa làm được vì chưa có ảnh project thật.
 - ⏸️ **Ảnh phóng nhẹ khi hover** — chưa có ảnh project/photography nào để áp dụng.
 
-### Đợt 3 — Tương tác nâng cao — ⬜ Chưa làm
+### Đợt 3 — Tương tác nâng cao — ✅ Xong phần làm được ngay (2026-09-11)
 
-Chỉ làm sau khi Đợt 2 được duyệt. Cụ thể hoá từ video mẫu:
-- Cursor tuỳ chỉnh: khi rê vào ảnh project hiện chữ "VIEW" thay con trỏ thường; khi trang đang chuyển (loading) hiện icon crosshair trắng
-- Magnetic button cho nút tròn "Get in touch" (di chuyển nhẹ theo hướng con trỏ khi rê gần)
-- Hiệu ứng chuyển trang: khi bấm vào 1 project, có màn hình tối chuyển tiếp ngắn hiện tên project + nút "Next case" trước khi trang mới load xong (bản mẫu dùng chính kỹ thuật này giữa các trang project)
+- ✅ **Magnetic button** — áp dụng cho **tất cả** nút tròn (`components/landing/CircleButton.js`), không chỉ riêng "Get in touch": nút dịch nhẹ về phía con trỏ khi rê gần (tối đa 10px), trả về vị trí gốc khi rời chuột. Tự tắt khi bật Reduce Motion (đúng mục 41.1 tài liệu). Đã kiểm tra bằng Playwright: `transform` đổi khi hover, về rỗng khi rời chuột.
+- ✅ **Hiệu ứng chuyển trang** — `components/PageTransition.js` (mount trong `app/layout.js`): khi chuyển route, 1 lớp phủ màu tối trượt che rồi mở ra như rèm cửa (0.5s). Đơn giản và an toàn hơn cách "chặn click rồi mới điều hướng" — không có rủi ro làm hỏng nút back/forward của trình duyệt vì chỉ là hiệu ứng trang trí chạy SAU khi Next.js đã điều hướng xong. Tự tắt khi bật Reduce Motion. Đã kiểm tra: lớp phủ xuất hiện đúng lúc bấm link, tự biến mất sau ~550ms, không xuất hiện khi Reduce Motion bật.
+- ⏸️ **Cursor tuỳ chỉnh "VIEW"** — sau khi rà lại kỹ tài liệu, tính năng này về bản chất chỉ có ý nghĩa khi hover lên **ảnh** project/photo (thay con trỏ khi rê vào ảnh) — hiện chưa có ảnh project/photo thật nào để gắn hiệu ứng vào, nên **không phải hoãn theo lựa chọn, mà là chưa có đối tượng để áp dụng**. Sẽ làm cùng lúc với việc thêm ảnh thật vào Projects/Photography.
+
+**Tinh chỉnh thêm theo góc nhìn "senior dev" (2026-09-11) — Ricky hỏi tôi sẽ làm gì nếu là chuyên gia có nhiều năm kinh nghiệm:**
+
+Quan điểm: chuyên nghiệp không phải là *thêm* animation, mà là animation *ít, mượt, có lý do*. Không thêm hiệu ứng mới, chỉ tinh chỉnh 4 điểm:
+- ✅ **Stagger cho danh sách** — `Reveal.js` thêm chế độ `stagger` (mỗi dòng trong list Projects/Other Projects/Resume xuất hiện lệch nhau 60ms thay vì bật cùng lúc cả khối). Đã kiểm tra: `transitionDelay` mỗi dòng là 0/60/120/180ms.
+- ✅ **Marquee tự tạm dừng khi cuộn khỏi màn hình** — tách thành `components/landing/MarqueeText.js`, dùng IntersectionObserver để pause/resume animation, tránh tốn CPU/pin vô ích khi người dùng không nhìn thấy nó. Thêm `will-change: transform` để mượt hơn. Đã kiểm tra: `animationPlayState` chuyển đúng running ⇄ paused.
+- ✅ **Magnetic button — tách tốc độ bám và tốc độ bật lại** — bám theo chuột nhanh (90ms), bật lại vị trí gốc chậm hơn có cảm giác đàn hồi (350ms) — thay vì cùng 1 tốc độ cứng nhắc như trước.
+- ✅ **Menu overlay có transition mượt** — trước đó bật/tắt đột ngột (thiếu hẳn 1 loại chuyển động theo mục 29.1 tài liệu: "interface transition 300-600ms"). Giờ có fade + scale nhẹ khi mở/đóng, các link hiện lần lượt so le nhau (stagger 40ms/dòng). Đã kiểm tra thêm: link trong menu đóng có `tabIndex=-1` (không thể tab tới bằng bàn phím khi ẩn — đúng chuẩn accessibility).
 
 ---
 

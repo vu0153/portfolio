@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import profile from "@/data/profile";
+import MarqueeText from "./MarqueeText";
 
 const routes = [
   { number: "01", label: "Technical Projects", href: "/projects" },
@@ -55,21 +56,7 @@ export default function LandingHero() {
 
             {/* Desktop-only: name drifts slowly on top of the portrait, seamless loop */}
             <div className="pointer-events-none absolute inset-0 z-10 hidden items-end overflow-hidden pb-6 sm:flex">
-              <div
-                className="marquee-track flex w-max items-center gap-20 whitespace-nowrap font-normal leading-none tracking-[-0.03em] text-white"
-                style={{ fontSize: "clamp(5rem, 2rem + 11vw, 13rem)" }}
-              >
-                <span className="flex shrink-0 items-center gap-20">
-                  {Array.from({ length: 4 }).map((_, i) => (
-                    <span key={i}>NGOC LONG VU — RICKY VU</span>
-                  ))}
-                </span>
-                <span aria-hidden="true" className="flex shrink-0 items-center gap-20">
-                  {Array.from({ length: 4 }).map((_, i) => (
-                    <span key={`dup-${i}`}>NGOC LONG VU — RICKY VU</span>
-                  ))}
-                </span>
-              </div>
+              <MarqueeText text="NGOC LONG VU — RICKY VU" />
             </div>
           </div>
         </div>

@@ -18,7 +18,7 @@ export default function ResumePreview() {
           Resume
         </h2>
 
-        <ul className="flex flex-col divide-y divide-line border-t border-b border-line">
+        <Reveal as="ul" stagger className="flex flex-col divide-y divide-line border-t border-b border-line">
           {profile.experience.map((job) => (
             <li
               key={`${job.company}-${job.period}`}
@@ -29,7 +29,7 @@ export default function ResumePreview() {
               <span className="text-sm tracking-[0.02em] text-muted">{job.period}</span>
             </li>
           ))}
-        </ul>
+        </Reveal>
 
         <div className="flex justify-end">
           <CircleButton href="/about">View full resume</CircleButton>

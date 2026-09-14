@@ -59,6 +59,20 @@ body {
   animation: marquee 90s linear infinite;
 }
 
+@keyframes page-reveal {
+  from {
+    transform: scaleY(1);
+  }
+  to {
+    transform: scaleY(0);
+  }
+}
+
+.page-transition-veil {
+  transform-origin: bottom;
+  animation: page-reveal 0.5s var(--ease-in-out) forwards;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reveal {
     opacity: 1 !important;

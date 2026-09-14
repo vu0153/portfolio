@@ -2,6 +2,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import PageTransition from "@/components/PageTransition";
 import profile from "@/data/profile";
 
 const generalSans = localFont({
@@ -27,6 +28,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${generalSans.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
+        <PageTransition />
         <Nav />
         <main className="flex-1">{children}</main>
         <Footer />
