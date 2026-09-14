@@ -12,55 +12,56 @@ const routes = [
 
 export default function LandingHero() {
   return (
-    <section className="relative overflow-hidden bg-hero px-[var(--page-x)] pb-16 pt-10 text-ink sm:pb-24 sm:pt-14">
-      <div className="mx-auto flex max-w-[1800px] flex-col gap-10">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+    <section className="relative flex min-h-[560px] flex-col overflow-hidden bg-hero sm:min-h-[720px] lg:min-h-[860px]">
+      <Image
+        src="/photos/ricky-hero.webp"
+        alt={`Portrait of ${profile.shortName}`}
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover object-[50%_30%]"
+      />
+
+      <div className="relative z-10 flex flex-1 flex-col px-[var(--page-x)] py-10 sm:py-14">
+        <div className="mx-auto flex w-full max-w-[1800px] flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <LocationBadge place="Adelaide, Australia" />
-          <p className="max-w-[15rem] text-xs tracking-[0.14em] text-ink uppercase sm:text-right">
-            {profile.headline}
-          </p>
+          <div
+            className="flex flex-col text-2xl leading-tight font-bold tracking-tight text-white sm:items-end sm:text-3xl"
+            style={{ textShadow: "0 2px 16px rgba(0,0,0,0.35)" }}
+          >
+            {profile.headlineItems.map((item) => (
+              <span key={item}>{item}</span>
+            ))}
+          </div>
         </div>
 
-        <div className="relative flex flex-col items-center gap-6 sm:gap-2">
+        <div className="relative flex-1">
           <h1 className="sr-only">{profile.name}</h1>
 
-          {/* Mobile-only: static, readable name above the portrait (no marquee) */}
+          {/* Mobile-only: static, readable name near the bottom of the photo (no marquee) */}
           <div
             aria-hidden
-            className="flex select-none flex-col items-center gap-1 text-center leading-[0.9] tracking-[-0.03em] sm:hidden"
-            style={{ fontSize: "clamp(1.8rem, 8vw, 2.75rem)" }}
+            className="absolute inset-x-0 bottom-0 flex select-none flex-col items-center gap-1 text-center leading-[0.9] tracking-[-0.03em] text-white sm:hidden"
+            style={{ fontSize: "clamp(2rem, 11vw, 3.25rem)" }}
           >
             <p>NGOC LONG VU</p>
             <p>RICKY VU</p>
           </div>
 
-          <div className="relative flex w-full items-center justify-center">
-            <div className="relative mx-auto w-full max-w-[320px] sm:max-w-[380px]">
-              <Image
-                src="/photos/ricky-hero.webp"
-                alt={`Portrait of ${profile.shortName}`}
-                width={1120}
-                height={1400}
-                priority
-                className="h-auto w-full object-cover"
-              />
-            </div>
-
-            {/* Desktop-only: name drifts slowly on top of the portrait, seamless loop */}
-            <div className="pointer-events-none absolute inset-0 z-10 hidden items-end overflow-hidden pb-6 sm:flex">
-              <MarqueeText text="NGOC LONG VU — RICKY VU" />
-            </div>
+          {/* Desktop-only: name drifts slowly on top of the photo, seamless loop */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-10 hidden overflow-hidden sm:bottom-14 sm:block">
+            <MarqueeText text="NGOC LONG VU - RICKY VU -" />
           </div>
         </div>
 
-        <div className="flex flex-col gap-4 text-sm tracking-[0.02em] sm:flex-row sm:items-start sm:justify-between">
+        <div className="mx-auto flex w-full max-w-[1800px] flex-col gap-4 text-sm tracking-[0.02em] text-white sm:flex-row sm:items-start sm:justify-between">
           {routes.map((route) => (
             <Link
               key={route.href}
               href={route.href}
-              className="group flex items-center gap-2 border-b border-transparent pb-1 text-ink transition-colors hover:border-ink"
+              className="group flex items-center gap-2 border-b border-transparent pb-1 transition-colors hover:border-white"
             >
-              <span className="text-muted">{route.number}</span>
+              <span className="text-white/60">{route.number}</span>
               <span className="transition-[letter-spacing] duration-300 group-hover:tracking-[0.04em]">
                 {route.label}
               </span>

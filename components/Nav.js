@@ -55,12 +55,8 @@ export default function Nav() {
         scrolled ? "border-black/10 shadow-sm dark:border-white/15" : "border-transparent"
       }`}
     >
-      <div className="mx-auto flex max-w-4xl items-center justify-between px-4 py-4 sm:px-6">
-        <Link href="/" className="font-semibold">
-          {profile.name}
-        </Link>
-
-        <ul className={`hidden gap-6 ${showTextLinks ? "sm:flex" : "sm:hidden"}`}>
+      <div className="relative mx-auto flex max-w-4xl items-center justify-center px-4 py-4 sm:px-6">
+        <ul className={`hidden gap-8 ${showTextLinks ? "sm:flex" : "sm:hidden"}`}>
           {links.map((link) => {
             const active = pathname === link.href;
             return (
@@ -68,13 +64,15 @@ export default function Nav() {
                 <Link
                   href={link.href}
                   aria-current={active ? "page" : undefined}
-                  className={
-                    active
-                      ? "font-semibold underline underline-offset-4"
-                      : "hover:underline underline-offset-4"
-                  }
+                  className={`group relative pb-1 ${active ? "font-semibold" : ""}`}
                 >
                   {link.label}
+                  <span
+                    aria-hidden
+                    className={`absolute inset-x-0 -bottom-0.5 h-px origin-left scale-x-0 bg-current transition-transform duration-300 [transition-timing-function:var(--ease-out)] group-hover:scale-x-100 ${
+                      active ? "scale-x-100" : ""
+                    }`}
+                  />
                 </Link>
               </li>
             );
@@ -83,7 +81,7 @@ export default function Nav() {
 
         <button
           type="button"
-          className={`relative flex h-9 w-9 flex-col items-center justify-center gap-1.5 rounded-full ${
+          className={`absolute top-1/2 right-4 flex h-9 w-9 -translate-y-1/2 flex-col items-center justify-center gap-1.5 rounded-full sm:right-6 ${
             showTextLinks ? "sm:hidden" : ""
           }`}
           aria-label={open ? "Close menu" : "Open menu"}

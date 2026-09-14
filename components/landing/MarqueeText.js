@@ -23,7 +23,7 @@ export default function MarqueeText({ text, repeat = 4 }) {
   return (
     <div
       ref={trackRef}
-      className="marquee-track flex w-max items-center gap-20 whitespace-nowrap font-normal leading-none tracking-[-0.03em] text-white"
+      className="marquee-track flex w-max items-center gap-20 whitespace-nowrap font-semibold leading-none tracking-[-0.03em] text-white"
       style={{ fontSize: "clamp(5rem, 2rem + 11vw, 13rem)", willChange: "transform" }}
     >
       <span className="flex shrink-0 items-center gap-20">

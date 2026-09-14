@@ -1,7 +1,8 @@
 const profile = {
   name: "Ngoc Long (Ricky) Vu",
   shortName: "Ricky Vu",
-  headline: "Network & IT Support Professional",
+  headline: "Network · Cybersecurity · IT Support",
+  headlineItems: ["Network", "Cybersecurity", "IT Support"],
   location: "Adelaide, South Australia",
   tagline:
     "Master of IT graduate (Network & Cybersecurity) seeking full-time Network, IT Support or Helpdesk roles in Australia.",

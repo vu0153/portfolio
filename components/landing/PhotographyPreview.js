@@ -18,7 +18,8 @@ export default function PhotographyPreview() {
         </h2>
 
         <p className="max-w-xl text-lg leading-relaxed text-muted">
-          A gallery of landscape and outdoor photography is coming soon.
+          The story of how a second-hand camera in 2012 turned into Memory Lane Photography, with
+          photos from along the way.
         </p>
 
         <div className="flex justify-end">

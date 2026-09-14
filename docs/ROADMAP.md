@@ -20,8 +20,10 @@ Tài liệu này là nguồn tham chiếu chính (source of truth) cho tiến đ
 | C. Trang chủ — Đợt 1 (layout tĩnh) | ✅ Xong, đã duyệt |
 | C. Trang chủ — Đợt 2 (chuyển động cơ bản) | ✅ Xong toàn bộ — chỉ còn 2 mục chờ ảnh project/photography thật |
 | C. Trang chủ — Đợt 3 (tương tác nâng cao) | ✅ Xong phần làm được ngay — cursor "VIEW" chờ ảnh project thật |
-| D. Các trang con (About/Projects/Photography/Contact) | ⏸️ Tạm dừng — bạn sẽ làm chi tiết từng trang riêng |
-| E. Vận hành / Deploy bản mới | ⬜ Chưa làm |
+| C. Intro splash (màn hình chào) | ✅ Xong (2026-09-14) |
+| D. Trang Photography | ✅ Xong — trang câu chuyện đầy đủ, 21 ảnh (2026-09-14) |
+| E. Trang About/Projects/Contact | ⏸️ Tạm dừng — bạn sẽ làm chi tiết từng trang riêng |
+| F. Vận hành / Deploy bản mới | ⬜ Chưa làm |
 
 ---
 
@@ -61,6 +63,23 @@ Tài liệu này là nguồn tham chiếu chính (source of truth) cho tiến đ
 - Đã sửa lỗi accessibility: chỉ còn 1 thẻ `<h1>` mỗi trang (trước đó có 3, sai chuẩn)
 - Đã kiểm tra: lint sạch, build production ok, 0 lỗi console, không tràn ngang ở 360/390/1920px, focus bàn phím hiển thị rõ (kiểm tra lại sau mỗi lần chỉnh)
 
+**Bỏ mục Resume preview khỏi trang chủ (2026-09-14):** Ricky không thích giao diện mục này trên Home. Đã bỏ `<ResumePreview />` khỏi `app/page.js` (giữ lại file component, không xoá, phòng khi cần dùng lại chỗ khác). Trang chủ giờ còn: Hero → Intro → Projects → Photography → Contact. Route "02 Resume" ở Hero và link "View full resume" vẫn trỏ đúng tới `/about` (nơi có đầy đủ Experience/Skills/Certifications) — không mất khả năng điều hướng tới thông tin resume, chỉ là không có section riêng lặp lại trên Home nữa.
+
+**Bài học kiểm tra:** khi chụp ảnh toàn trang (`--full-page`) bằng CLI `playwright screenshot`, các section dùng `Reveal` (hiệu ứng hiện dần khi cuộn, dựa trên `IntersectionObserver`) có thể chụp ra **trống rỗng** nếu công cụ resize khung nhìn thay vì cuộn thật — không phải lỗi trang, chỉ là IntersectionObserver chưa kịp kích hoạt. Cách chụp đúng: dùng script cuộn dần (`mouse.wheel` nhiều lần + đợi) trước khi chụp `fullPage`, không dùng CLI `--full-page` trực tiếp cho các trang có hiệu ứng này.
+
+**Headline + Nav tinh chỉnh thêm (2026-09-14):**
+- ✅ Headline đổi từ 1 dòng "Network & IT Support Professional" thành **3 dòng riêng biệt, đậm (`font-bold`), to hơn**: "Network" / "Cybersecurity" / "IT Support" — canh phải. Dữ liệu thêm `headlineItems` (mảng) trong `data/profile.js`, giữ `headline` (chuỗi 1 dòng "Network · Cybersecurity · IT Support") riêng cho thẻ `<title>` trang.
+- ✅ Nav: bỏ tên "Ngoc Long (Ricky) Vu" khỏi thanh menu (Ricky thấy thừa) — menu giờ **canh giữa** thanh Nav, nút hamburger (khi cuộn/mobile) neo cố định góc phải.
+- ✅ Thêm hiệu ứng hover mới cho menu chữ: **gạch chân trượt vào** (scale từ trái sang phải, 300ms, dùng đúng easing token đã có) thay cho gạch chân mặc định của trình duyệt — trang hiện tại vẫn giữ gạch chân cố định.
+- **Lưu ý kỹ thuật phát hiện khi test:** Tailwind v4 đổi cách hiện thực `scale-x-*` — dùng thuộc tính CSS `scale` (`scale: var(--tw-scale-x) var(--tw-scale-y)`) thay vì `transform: scale()` như v3. Nếu sau này cần kiểm tra `scale-x-*`/`rotate-*`/`translate-*` bằng script, phải đọc đúng `getComputedStyle(el).scale` / `.rotate` / `.translate` (thuộc tính CSS riêng), không phải `.transform` — nhầm chỗ này từng khiến 1 lần kiểm tra ra kết quả sai (tưởng lỗi nhưng thực ra hoạt động đúng).
+
+**Tinh chỉnh chữ marquee sau khi có ảnh nền mới (2026-09-14):**
+- ✅ Đẩy vị trí lên cao hơn (`bottom-10 sm:bottom-14` thay vì `bottom-0`) — tránh bị cắt sát mép dưới Hero
+- ✅ Đổi độ đậm chữ từ `font-normal` sang `font-semibold` (dùng đúng file General Sans Semibold đã tải sẵn) — dày hơn, nổi bật hơn trên ảnh
+- ✅ Đổi nội dung lặp từ "NGOC LONG VU — RICKY VU" (em-dash giữa) thành **"NGOC LONG VU - RICKY VU -"** (thêm dấu gạch ngang cuối) — tránh cảm giác dính chữ khi vòng lặp nối tiếp nhau
+
+**Sự cố cache ảnh đã xử lý (2026-09-14):** Ricky báo trình duyệt local vẫn hiện ảnh cũ dù đã đổi ảnh mới, kể cả ở cửa sổ ẩn danh. Đã xác minh qua 3 lớp độc lập (MD5 file trên đĩa, MD5 file server trả về qua `curl`, ảnh chụp từ trình duyệt Playwright hoàn toàn sạch) — server luôn đúng. Đã xoá sạch `.next` cache và khởi động lại để loại trừ khả năng cache build phía server. Kết luận: vấn đề nằm ở phía trình duyệt/máy Ricky (rất có thể là cache ảnh cũ của Chrome hoặc 1 extension), không phải lỗi code — Ricky xác nhận đã thấy đúng ảnh sau đó. **Ghi nhớ cho lần sau:** nếu Ricky báo "vẫn thấy cái cũ" sau khi đổi asset, quy trình xác minh nhanh là (1) so `md5` file trên đĩa vs. `curl` từ server, (2) nếu khớp, chụp màn hình bằng Playwright (trình duyệt sạch) để chứng minh server đúng, (3) hướng dẫn Ricky thử link ảnh trực tiếp + trình duyệt khác để khoanh vùng về phía máy họ.
+
 **Đã đối chiếu với video mẫu (dennissnellenberg.com) ngày 2026-09-11 — đã sửa các điểm lệch:**
 - ✅ Badge vị trí → đổi từ chữ thường thành pill nền tối bo tròn (giống "Located in the Netherlands" bản gốc)
 - ✅ Các link "View more" → đổi thành nút tròn lớn (giống "About me"/"Get in touch" bản gốc), chỉ dùng màu accent cho nút CTA quan trọng nhất (Get in touch), còn lại dùng đen — đúng "quy tắc màu" mục 7.1 tài liệu (accent chỉ xuất hiện ở số ít điểm)
@@ -95,7 +114,7 @@ Tài liệu này là nguồn tham chiếu chính (source of truth) cho tiến đ
 - ✅ **Tăng cỡ chữ marquee lên đúng tỷ lệ bản mẫu** — từ `clamp(2.4rem…5.5rem)` (quá nhỏ, không nổi bật) lên `clamp(5rem, 2rem + 11vw, 13rem)` — đúng bằng thang "display text" mà chính tài liệu thiết kế đề xuất (mục 8.3) nhưng ban đầu chưa dùng tới. Đã kiểm tra ở 1920px và 1440px, chữ không bị cắt, không tràn ngang.
 - ✅ **3 chỉnh sửa theo ảnh chụp thực tế bản mẫu (2026-09-11):** (1) tốc độ marquee chậm lại từ 40s → 90s/vòng; (2) vị trí chữ dịch xuống thấp (dùng `items-end` thay vì `items-center`, cắt ngang qua áo/thân dưới thay vì mặt); (3) bỏ hiệu ứng `mix-blend-difference`, dùng trắng thuần đơn giản — với ảnh nền xám trung tính hiện tại, trắng thuần vẫn đủ tương phản, không cần kỹ thuật blend phức tạp.
 - ✅ **Đổi font chữ toàn site sang General Sans** (2026-09-11) — Ricky thấy Geist "giống Arial, không sang". General Sans (Fontshare, miễn phí kể cả dùng thương mại) là lựa chọn phổ biến trong giới thiết kế portfolio cao cấp, gần với "PP Neue Montreal" (font bản mẫu Dennis Snellenberg dùng nhưng có phí, không dùng được). Đã tải 4 file `.woff2` (Regular/Medium/Semibold/Bold, ~90KB tổng) về tự host tại `fonts/general-sans/`, cấu hình qua `next/font/local` trong `app/layout.js` (không dùng CDN ngoài — nhanh và ổn định hơn). Đã gỡ bỏ Geist Mono (không dùng ở đâu trong code). Xác nhận qua `getComputedStyle` — font áp dụng đúng, không lỗi tải font, build/lint sạch.
-- ✅ **Thay ảnh hero mới** (2026-09-11) — Ricky cung cấp `public/photos/Ricky.png`, một tấm chân dung chuyên nghiệp chụp phông xám (~màu `#849092`, rất gần với `--hero: #8e9494`, không cần tách nền như tấm ảnh thử nghiệm trước). Đã nén xuống WebP (~151KB, giảm từ ~2MB gốc), ghi đè `public/photos/ricky-hero.webp`, xoá file PNG gốc sau khi nén (đúng quy trình đã thống nhất — không giữ ảnh thô nặng trong repo). Ảnh mới tỷ lệ vuông hơn (1120×1400, chân dung bán thân) so với ảnh cũ (963×1400, toàn thân) — đã cập nhật `width`/`height` trong `LandingHero.js` cho khớp. **Đã hỏi Ricky về viền khung ảnh (2026-09-11):** giữ nguyên tạm thời. Ricky sẽ tự chụp 1 tấm ảnh mới trong tương lai theo **hướng ngang/dàn trải rộng** (giống bố cục ảnh của Dennis Snellenberg — ảnh chụp rộng, người không chiếm toàn bộ khung dọc) và **không cần tách nền** — khi có ảnh đó, cần đổi lại tỷ lệ khung hiển thị (`max-w`, `width`/`height` trong `LandingHero.js`) từ dạng dọc (portrait) hiện tại sang dạng ngang (landscape) để khớp bố cục mới.
+- ✅ **Thay ảnh hero mới** (2026-09-11) — Ricky cung cấp `public/photos/Ricky.png`, một tấm chân dung chuyên nghiệp chụp phông xám (~màu `#849092`, rất gần với `--hero: #8e9494`, không cần tách nền như tấm ảnh thử nghiệm trước). Đã nén xuống WebP (~151KB, giảm từ ~2MB gốc), ghi đè `public/photos/ricky-hero.webp`, xoá file PNG gốc sau khi nén (đúng quy trình đã thống nhất — không giữ ảnh thô nặng trong repo). Ảnh mới tỷ lệ vuông hơn (1120×1400, chân dung bán thân) so với ảnh cũ (963×1400, toàn thân) — đã cập nhật `width`/`height` trong `LandingHero.js` cho khớp. **Đã hỏi Ricky về viền khung ảnh (2026-09-11):** giữ nguyên tạm thời, Ricky nói sẽ tự chụp ảnh ngang sau. → **Đã thực hiện ngày 2026-09-14**, xem mục "Hero đổi hẳn sang ảnh nền phủ toàn khung" bên dưới — không còn viền khung nữa, ảnh giờ phủ toàn bộ Hero.
 
 **Vẫn hoãn — chưa có ảnh thật để làm:**
 - ⏸️ **Hover project → ảnh bám theo con trỏ + nút "View"** — chưa làm được vì chưa có ảnh project thật.
@@ -107,6 +126,17 @@ Tài liệu này là nguồn tham chiếu chính (source of truth) cho tiến đ
 - ✅ **Hiệu ứng chuyển trang** — `components/PageTransition.js` (mount trong `app/layout.js`): khi chuyển route, 1 lớp phủ màu tối trượt che rồi mở ra như rèm cửa (0.5s). Đơn giản và an toàn hơn cách "chặn click rồi mới điều hướng" — không có rủi ro làm hỏng nút back/forward của trình duyệt vì chỉ là hiệu ứng trang trí chạy SAU khi Next.js đã điều hướng xong. Tự tắt khi bật Reduce Motion. Đã kiểm tra: lớp phủ xuất hiện đúng lúc bấm link, tự biến mất sau ~550ms, không xuất hiện khi Reduce Motion bật.
 - ⏸️ **Cursor tuỳ chỉnh "VIEW"** — sau khi rà lại kỹ tài liệu, tính năng này về bản chất chỉ có ý nghĩa khi hover lên **ảnh** project/photo (thay con trỏ khi rê vào ảnh) — hiện chưa có ảnh project/photo thật nào để gắn hiệu ứng vào, nên **không phải hoãn theo lựa chọn, mà là chưa có đối tượng để áp dụng**. Sẽ làm cùng lúc với việc thêm ảnh thật vào Projects/Photography.
 
+**Hero đổi hẳn sang ảnh nền phủ toàn khung (2026-09-14) — thay đổi lớn nhất từ đầu dự án:**
+
+Ricky cung cấp ảnh thật của mình (`Ricky.jpg`, chụp máy Sony ILCE-7M4, chỉnh Lightroom, bố cục ngang 16:9, ngồi trên cầu tàu, biển phía sau) và yêu cầu đổi hẳn Hero từ "ảnh nhỏ đứng giữa" sang "ảnh nền phủ toàn khung" giống bản mẫu thật. Đây là thay đổi cấu trúc, không chỉ thay file ảnh:
+- Ảnh nén xuống 2400×1350 WebP (~150KB, từ ~4.7MB gốc 4672×2628), file gốc đã xoá sau khi nén
+- `LandingHero.js` viết lại hoàn toàn: `<section>` giờ có `min-h-[560px] sm:min-h-[720px] lg:min-h-[860px]`, ảnh dùng `next/image` với `fill` + `object-cover object-[50%_30%]` (lệch điểm neo lên 30% từ trên để giữ mặt trong khung khi bị cắt ở màn hình hẹp) phủ toàn bộ section, mọi nội dung khác (badge, headline, tên marquee, 3 route) giờ là lớp phủ (`relative z-10`) đè lên ảnh
+- Route ở cuối Hero đổi từ `text-ink` sang `text-white` (đọc được trên ảnh)
+- **Chủ động thêm bóng đổ nhẹ** (`text-shadow`) cho dòng headline — vùng đó nằm trên nền trời sáng trong ảnh, chữ trắng thuần hơi giảm tương phản; bóng đổ giúp chắc chắn dễ đọc mà không cần biết trước ảnh sẽ sáng/tối ra sao
+- Đã kiểm tra: lint/build sạch, không lỗi console, không tràn ngang, hiển thị đúng ở 1920/1440/mobile
+
+**Headline "Network & IT Support Professional" (2026-09-14):** đổi từ chữ nhỏ/màu tối/in hoa sang chữ trắng, to, không in hoa — giống cách bản mẫu hiển thị "Freelance / Designer & Developer" nổi bật trên nền Hero.
+
 **Badge "Based in" làm lại theo đúng bản mẫu (2026-09-14):** Ricky gửi ảnh chụp bản gốc chỉ rõ badge cần to hơn, chữ canh giữa theo chiều dọc, và có icon quả địa cầu tự xoay. Tạo `components/landing/LocationBadge.js` — icon SVG địa cầu (vòng tròn + kinh tuyến + đường xích đạo) đặt trong 1 vòng tròn riêng bên trong badge, tự xoay chậm (10s/vòng, `@keyframes globe-spin`), tự tắt khi bật Reduce Motion. Đã kiểm tra: `animationName` = "globe-spin" ở chế độ thường, "none" khi Reduce Motion bật; không lỗi console; hiển thị đúng cả desktop và mobile.
 
 **Tinh chỉnh thêm theo góc nhìn "senior dev" (2026-09-11) — Ricky hỏi tôi sẽ làm gì nếu là chuyên gia có nhiều năm kinh nghiệm:**
@@ -117,21 +147,52 @@ Quan điểm: chuyên nghiệp không phải là *thêm* animation, mà là anim
 - ✅ **Magnetic button — tách tốc độ bám và tốc độ bật lại** — bám theo chuột nhanh (90ms), bật lại vị trí gốc chậm hơn có cảm giác đàn hồi (350ms) — thay vì cùng 1 tốc độ cứng nhắc như trước.
 - ✅ **Menu overlay có transition mượt** — trước đó bật/tắt đột ngột (thiếu hẳn 1 loại chuyển động theo mục 29.1 tài liệu: "interface transition 300-600ms"). Giờ có fade + scale nhẹ khi mở/đóng, các link hiện lần lượt so le nhau (stagger 40ms/dòng). Đã kiểm tra thêm: link trong menu đóng có `tabIndex=-1` (không thể tab tới bằng bàn phím khi ẩn — đúng chuẩn accessibility).
 
+**Intro splash màn hình chào (2026-09-14):** Ricky yêu cầu khi vừa vào web lần đầu, hiện màn hình đen với chữ "Welcome to Ricky's Portfolio" giữa màn hình trong 1.5 giây, rồi chuyển mượt sang Home.
+
+- Component mới `components/IntroSplash.js`, mount đầu tiên trong `app/layout.js` (trước cả `PageTransition`, `Nav`).
+- Dùng `sessionStorage` (key `introShown`) để chỉ hiện đúng 1 lần mỗi phiên tab trình duyệt — điều hướng nội bộ sau đó (About/Projects/...) không hiện lại.
+- Tái dùng đúng hiệu ứng "rèm cửa" (`page-reveal` keyframe) đã có ở `PageTransition.js` cho lúc biến mất, để đồng bộ cảm giác chuyển cảnh toàn site — thêm class riêng `.intro-splash-leave` (0.6s) + `.intro-splash-text` (chữ mờ dần hiện lên) trong `globals.css`.
+- Tự tắt hoàn toàn khi bật `prefers-reduced-motion: reduce` (không hiện overlay, vào thẳng Home).
+- Khoá cuộn trang (`document.body.style.overflow = "hidden"`) trong lúc overlay hiện, mở lại ngay khi biến mất.
+- z-index `[200]` — cao hơn `PageTransition` (`[100]`) và Nav (`50`) để không bị đè khi cả hai cùng chạy lúc tải trang lần đầu.
+- **Lỗi gặp phải khi build:** `react-hooks/set-state-in-effect` — gọi `setState` ngay trong thân `useEffect`. Khác với 3 lần gặp lỗi này trước đó trong dự án (Nav/PageTransition — đều là state "phái sinh" từ 1 giá trị đổi theo render), lần này là state khởi tạo 1 lần khi mount nên không thể sửa bằng cách so sánh giá trị lúc render. Sửa bằng cách bọc `setPhase("holding")` trong `setTimeout(..., 0)` để lùi việc gọi setState ra khỏi thân effect đồng bộ.
+- **Bug thật phát hiện khi kiểm tra bằng Playwright** (không phải chỉ là lỗi lint): React Strict Mode (chỉ bật ở `next dev`) chạy effect kiểu mount → cleanup → mount lại ngay lập tức để kiểm tra độ bền. Bản đầu tiên ghi `sessionStorage.setItem("introShown", "1")` ngay trong thân effect (đồng bộ) — lần mount "giả" đầu tiên ghi cờ này trước, rồi bị cleanup huỷ timer; đến lần mount "thật" thứ hai, code đọc thấy cờ đã "1" nên bỏ qua luôn, kết quả là **splash không bao giờ hiện ra** dù lint/build đều sạch. Root-cause bằng cách thêm log tạm thời vào từng effect, thấy rõ 2 lần "effect run" liên tiếp. Sửa bằng cách dời `sessionStorage.setItem` vào bên trong callback của chính timer (chỉ timer nào sống sót qua cleanup mới ghi cờ) — cách này an toàn với cả Strict Mode lẫn production (không có Strict Mode double-invoke).
+- Đã kiểm tra bằng Playwright (script tạm, đã xoá sau khi xong): hiện đúng lúc tải trang lần đầu, giữ ~1.5s, chuyển cảnh mượt rồi biến mất; không hiện lại khi điều hướng nội bộ trong cùng tab; bỏ qua hoàn toàn khi bật Reduce Motion; cuộn trang bị khoá lúc hiện và mở lại đúng lúc biến mất; hiển thị đúng ở mobile (390px). `npm run lint` và `npm run build` đều sạch.
+- Vòng tròn đen nhỏ có chữ "N" ở góc dưới trái trong ảnh chụp màn hình lúc `npm run dev` là **Next.js Dev Indicator** (Next tự chèn, chỉ có ở dev, không xuất hiện ở bản production) — không phải lỗi của site.
+
 ---
 
-## D. Các trang con — ⏸️ Tạm dừng
+## D. Trang Photography — ✅ Xong (2026-09-14)
 
-Theo yêu cầu của bạn (2026-09-11): **không polish thêm** các trang `/about`, `/projects`, `/photography`, `/contact` cho đến khi bạn chủ động muốn làm chi tiết từng trang. Ghi chú để nhớ khi quay lại:
+Ricky cung cấp 1 file Word (`story/story.docx`, đã xoá sau khi xử lý xong) kể câu chuyện nhiếp ảnh của mình bằng tiếng Việt, chú thích ảnh bằng `[số]`, cùng 21 ảnh (15 ảnh đánh số `[1]`-`[15]` theo câu chuyện + 6 ảnh phong cảnh đồng quê Adelaide không đánh số, Ricky cho phép tự viết thêm 1 đoạn cho nhóm ảnh này).
 
-- Các trang này hiện dùng giao diện sáng/tối mặc định từ Milestone B, **chưa đồng bộ** token màu editorial (be/xám/đen) của Home mới — cần cân nhắc đồng bộ lại khi làm.
-- `/projects` cần: nội dung đầy đủ cho từng project (mục đích, mô tả, hình ảnh) — bạn nói sẽ tự cung cấp ảnh sau.
-- `/photography` cần: ảnh thật từ bạn (chưa có ảnh nào).
+**Đã làm:**
+- Viết lại toàn bộ câu chuyện bằng tiếng Anh, chau chuốt hơn, chia thành 6 phần theo dòng thời gian: (01) mua máy ảnh đầu tiên 2012 → (02) học cách nhìn + câu nói của bà ngoại → (03) chụp đám cưới/chân dung cho bạn bè → (04) đặt chân đến Úc 2018 → (05) đồng sáng lập Memory Lane Photography với Mark Lee → (06) *phần tự viết thêm*: những chuyến đi cuối tuần quanh Adelaide, dùng 6 ảnh phong cảnh không đánh số.
+- Xử lý 21 ảnh: chỉnh hướng xoay theo EXIF, resize, nén WebP — tổng dung lượng từ hơn 200MB gốc xuống còn **4.1MB**, lưu tại `public/photos/photography/` (`photo1`-`photo15`, `trip1`-`trip6`).
+- Xây `app/photography/page.js` hoàn toàn mới, dùng đúng token thiết kế editorial của Home (`bg-paper`, `text-ink`, `text-muted`, `Reveal` cho hiệu ứng cuộn) — **là trang con đầu tiên được đồng bộ theo phong cách mới**, không phải "coming soon" nữa.
+- Component mới: `components/photography/StoryPhoto.js` (ảnh + chú thích dùng chung).
+- Bố cục ảnh: đơn lẻ vừa phải cho các mốc chính, lưới 2x2 cho nhóm ảnh đám cưới, lưới 2 cột cho portrait/Úc/Memory Lane — theo đúng yêu cầu "không to quá không nhỏ quá".
+- Cập nhật câu giới thiệu Photography ở Home (bỏ "coming soon").
+- Đã kiểm tra: lint/build sạch, 21/21 ảnh tải đúng (xác nhận sau khi cuộn qua, tránh nhầm lẫn do lazy-load), 1 h1 duy nhất, 0 lỗi console, reduced motion hoạt động đúng, mobile hiển thị tốt.
+- Đã xoá thư mục `story/` (ảnh gốc + docx) sau khi xử lý xong — không giữ file thô nặng trong repo, đúng quy trình đã thống nhất từ trước.
+- **Viết lại lần 2 theo yêu cầu "humanize"**: Ricky gửi bộ nguyên tắc phát hiện văn phong AI (tài liệu Wikipedia WP:AITELL) và yêu cầu áp dụng cho toàn bộ nội dung vừa viết. Đã lưu thành memory `humanizer` (áp dụng cho mọi nội dung dài viết sau này, không chỉ trang này) và viết lại câu chuyện: bỏ các dấu hiệu văn AI (từ vựng sáo rỗng như "underscore/testament/vibrant", câu đối lập kiểu "not just X but Y", liệt kê 3 vế ép buộc, gạch ngang em-dash lặp lại, thay is/was bằng serves as/stands as...) — giữ nguyên nghĩa và sự kiện, không thêm thông tin mới. Câu nói của bà ngoại (trích dẫn trực tiếp) giữ nguyên không đổi.
+
+**Việc còn lại:** Ricky sẽ tạo các project riêng trong mục nhiếp ảnh sau (không phải bây giờ). Câu chuyện tiếng Anh đã gửi kèm bản dịch tiếng Việt cho Ricky xem lại (xem cuối cuộc trò chuyện lúc bàn giao).
+
+---
+
+## E. Các trang con còn lại (About/Projects/Contact) — ⏸️ Tạm dừng
+
+Theo yêu cầu của bạn (2026-09-11): **không polish thêm** các trang `/about`, `/projects`, `/contact` cho đến khi bạn chủ động muốn làm chi tiết từng trang. Ghi chú để nhớ khi quay lại:
+
+- Các trang này hiện dùng giao diện sáng/tối mặc định từ Milestone B, **chưa đồng bộ** token màu editorial (be/xám/đen) của Home mới — `/photography` đã đồng bộ (xem mục D), có thể dùng làm mẫu tham khảo khi làm các trang còn lại.
+- `/projects` cần: nội dung đầy đủ cho từng project (mục đích, mô tả, hình ảnh) — bạn nói sẽ tự cung cấp ảnh sau, và mỗi project sẽ có trang riêng.
 - `/contact` đã xong nội dung cơ bản, có thể chỉ cần đồng bộ style.
 - `/about` đã đầy đủ nội dung, có thể chỉ cần đồng bộ style + rà lại theo hướng "Resume" nếu muốn khớp cách gọi ở Home.
 
 ---
 
-## E. Vận hành / Deploy — ⬜ Chưa làm
+## F. Vận hành / Deploy — ⬜ Chưa làm
 
 - [ ] Commit các thay đổi Home Đợt 1 (đang chờ, có thể làm ngay vì bạn đã duyệt bố cục tổng thể)
 - [ ] Push lên GitHub
@@ -163,6 +224,11 @@ Dark mode, blog, CMS, analytics, custom domain, contact-form backend thật, aut
 | 2026-09-11 | Danh sách Projects trên Home có thêm mục "Other Projects" (5 project phụ) ngay sau 4 project chủ đạo |
 | 2026-09-11 | Câu CTA cuối trang: "Let's discuss how I can support your team." (thay cho câu gốc "Have something interesting to discuss?") |
 | 2026-09-11 | Đợt 2: làm scroll reveal, hover route, local time footer, Nav thu gọn toàn site khi cuộn, tên marquee trôi ngang (desktop) — tất cả đã xác nhận và hoàn tất |
+| 2026-09-14 | Đổi font từ Geist sang General Sans (self-host qua Fontshare) |
+| 2026-09-14 | Badge "Based in" làm lại to hơn, có icon địa cầu SVG tự xoay |
+| 2026-09-14 | Headline "Network & IT Support Professional" đổi thành chữ trắng, to, nổi bật |
+| 2026-09-14 | **Hero đổi cấu trúc lớn**: từ "ảnh nhỏ đứng giữa" sang "ảnh nền phủ toàn khung" dùng ảnh ngang thật của Ricky (không còn ảnh thử nghiệm) |
+| 2026-09-14 | Thêm intro splash (màn hình chào đen, 1.5s, chỉ hiện 1 lần/phiên tab) trước khi vào Home |
 
 ---
 
