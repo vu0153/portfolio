@@ -73,6 +73,19 @@ body {
   animation: page-reveal 0.5s var(--ease-in-out) forwards;
 }
 
+@keyframes globe-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.globe-spin {
+  animation: globe-spin 10s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reveal {
     opacity: 1 !important;
@@ -81,6 +94,10 @@ body {
   }
 
   .marquee-track {
+    animation: none;
+  }
+
+  .globe-spin {
     animation: none;
   }
 }

@@ -107,6 +107,8 @@ Tài liệu này là nguồn tham chiếu chính (source of truth) cho tiến đ
 - ✅ **Hiệu ứng chuyển trang** — `components/PageTransition.js` (mount trong `app/layout.js`): khi chuyển route, 1 lớp phủ màu tối trượt che rồi mở ra như rèm cửa (0.5s). Đơn giản và an toàn hơn cách "chặn click rồi mới điều hướng" — không có rủi ro làm hỏng nút back/forward của trình duyệt vì chỉ là hiệu ứng trang trí chạy SAU khi Next.js đã điều hướng xong. Tự tắt khi bật Reduce Motion. Đã kiểm tra: lớp phủ xuất hiện đúng lúc bấm link, tự biến mất sau ~550ms, không xuất hiện khi Reduce Motion bật.
 - ⏸️ **Cursor tuỳ chỉnh "VIEW"** — sau khi rà lại kỹ tài liệu, tính năng này về bản chất chỉ có ý nghĩa khi hover lên **ảnh** project/photo (thay con trỏ khi rê vào ảnh) — hiện chưa có ảnh project/photo thật nào để gắn hiệu ứng vào, nên **không phải hoãn theo lựa chọn, mà là chưa có đối tượng để áp dụng**. Sẽ làm cùng lúc với việc thêm ảnh thật vào Projects/Photography.
 
+**Badge "Based in" làm lại theo đúng bản mẫu (2026-09-14):** Ricky gửi ảnh chụp bản gốc chỉ rõ badge cần to hơn, chữ canh giữa theo chiều dọc, và có icon quả địa cầu tự xoay. Tạo `components/landing/LocationBadge.js` — icon SVG địa cầu (vòng tròn + kinh tuyến + đường xích đạo) đặt trong 1 vòng tròn riêng bên trong badge, tự xoay chậm (10s/vòng, `@keyframes globe-spin`), tự tắt khi bật Reduce Motion. Đã kiểm tra: `animationName` = "globe-spin" ở chế độ thường, "none" khi Reduce Motion bật; không lỗi console; hiển thị đúng cả desktop và mobile.
+
 **Tinh chỉnh thêm theo góc nhìn "senior dev" (2026-09-11) — Ricky hỏi tôi sẽ làm gì nếu là chuyên gia có nhiều năm kinh nghiệm:**
 
 Quan điểm: chuyên nghiệp không phải là *thêm* animation, mà là animation *ít, mượt, có lý do*. Không thêm hiệu ứng mới, chỉ tinh chỉnh 4 điểm:

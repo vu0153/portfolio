@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import profile from "@/data/profile";
 import MarqueeText from "./MarqueeText";
+import LocationBadge from "./LocationBadge";
 
 const routes = [
   { number: "01", label: "Technical Projects", href: "/projects" },
@@ -14,16 +15,7 @@ export default function LandingHero() {
     <section className="relative overflow-hidden bg-hero px-[var(--page-x)] pb-16 pt-10 text-ink sm:pb-24 sm:pt-14">
       <div className="mx-auto flex max-w-[1800px] flex-col gap-10">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div className="inline-flex w-fit items-center gap-3 rounded-full bg-dark px-4 py-2 text-dark-text">
-            <span aria-hidden className="text-lg leading-none">
-              ●
-            </span>
-            <span className="text-xs leading-tight tracking-[0.04em]">
-              Based in
-              <br />
-              Adelaide, Australia
-            </span>
-          </div>
+          <LocationBadge place="Adelaide, Australia" />
           <p className="max-w-[15rem] text-xs tracking-[0.14em] text-ink uppercase sm:text-right">
             {profile.headline}
           </p>
