@@ -7,7 +7,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "gallery:process": "python3 scripts/process_gallery.py"
   },
   "dependencies": {
     "next": "16.3.4",

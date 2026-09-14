@@ -22,6 +22,7 @@ Tài liệu này là nguồn tham chiếu chính (source of truth) cho tiến đ
 | C. Trang chủ — Đợt 3 (tương tác nâng cao) | ✅ Xong phần làm được ngay — cursor "VIEW" chờ ảnh project thật |
 | C. Intro splash (màn hình chào) | ✅ Xong (2026-09-14) |
 | D. Trang Photography | ✅ Xong — trang câu chuyện đầy đủ, 21 ảnh (2026-09-14) |
+| D2. Gallery ảnh cá nhân | ✅ Xong — tag + overlay + quy trình nén ảnh tự động (2026-09-14) |
 | E. Trang About/Projects/Contact | ⏸️ Tạm dừng — bạn sẽ làm chi tiết từng trang riêng |
 | F. Vận hành / Deploy bản mới | ⬜ Chưa làm |
 
@@ -181,6 +182,24 @@ Ricky cung cấp 1 file Word (`story/story.docx`, đã xoá sau khi xử lý xon
 
 ---
 
+## D2. Gallery ảnh cá nhân trên trang Photography — ✅ Xong (2026-09-14)
+
+Ricky muốn có 1 tag "Gallery" cạnh bên khi đọc story, ấn vào mở 1 cửa sổ riêng hiển thị ảnh anh tự chụp (khác với ảnh minh hoạ câu chuyện) — và muốn 1 quy trình để tự thêm ảnh mới về sau mà không cần sửa code mỗi lần.
+
+**Đã làm:**
+- `components/photography/Gallery.js` — nút tròn nổi "GALLERY" (icon máy ảnh + chữ đậm, có vòng pulse lan toả để thu hút mắt, hiệu ứng "magnetic" bám nhẹ theo chuột khi rê gần — dùng lại đúng kỹ thuật của `CircleButton.js`) ở cạnh phải màn hình, chỉ hiện trên trang `/photography`. **Bản đầu tiên chỉ là 1 tag chữ dọc nhỏ — Ricky phản hồi "quá nhỏ, không ai để ý", đã làm lại to/đậm/nổi bật hơn hẳn theo góp ý.** Ấn vào mở overlay toàn màn hình nền tối, ảnh trượt lên từ dưới (0.5s, dùng lại easing đã có), đóng bằng nút X / phím Esc / tự tắt khi bật Reduce Motion (đóng gần như tức thì thay vì chờ hết animation). Ảnh trong lưới hiện so le (stagger) khi mở.
+- Lưới ảnh responsive: 2 cột (mobile) → 3 (tablet) → 4 cột (desktop), khung tỉ lệ 4:5 đồng đều dù ảnh gốc ngang/dọc khác nhau. Có trạng thái rỗng ("New photos will show up here soon.") khi chưa có ảnh nào.
+- **Quy trình thêm ảnh cho Ricky**: folder `gallery-inbox/` ở thư mục gốc (có `README.md` hướng dẫn bằng tiếng Việt) — Ricky thả ảnh gốc vào đó, báo Claude (hoặc tự chạy `npm run gallery:process`), script `scripts/process_gallery.py` (Python + Pillow, cùng kỹ thuật đã dùng cho ảnh story: xoay theo EXIF, resize tối đa 2000px cạnh dài, nén WebP chất lượng 85) sẽ tự nén, lưu vào `public/photos/gallery/`, xoá ảnh gốc khỏi inbox, và tự viết lại `data/gallery.js` (file này có ghi chú "auto-generated, đừng sửa tay"). Ảnh sẽ tự xuất hiện trong Gallery, không cần đụng code. **Giới hạn cần biết:** ảnh định dạng HEIC (mặc định iPhone) chưa được hỗ trợ, cần export sang JPG/PNG trước.
+- `gallery-inbox/*` được thêm vào `.gitignore` (chỉ giữ lại `README.md`) — không bao giờ commit ảnh gốc chưa nén.
+- Ricky gửi 25 ảnh thật (chân dung, ảnh cưới chụp cho khách, phong cảnh) — đã xử lý bằng script, tổng dung lượng còn **3.6MB**. 2 file định dạng `.HIF` (Canon) lúc đầu bị script báo "unsupported, export sang JPG/PNG trước" (đã thêm log rõ ràng cho trường hợp này thay vì bỏ qua âm thầm) — Ricky tự export lại bằng JPEG rồi gửi lại, đã xử lý xong nốt 2 ảnh này.
+- **Bug thật nghiêm trọng phát hiện khi kiểm tra 25 ảnh thật (không phải lỗi cache, không phải lỗi code của mình)**: khi mở Gallery, một số ảnh hiển thị sai — không phải ảnh thật mà là màu đặc (dấu vết ảnh test đã dùng lúc code). Đã mất khá nhiều bước loại trừ (xoá cache `.next`, restart dev server, so sánh byte-cho-byte file gốc vs. file server trả về — file gốc luôn đúng) mới xác định được: đây là **race condition thật bên trong bộ tối ưu ảnh tích hợp của Next.js (`/_next/image`)** — khi nhiều ảnh có CÙNG kích thước đầu ra (ví dụ nhiều ảnh cùng resize về đúng 384×288px) được request gần như đồng thời (đúng như khi mở 1 lưới Gallery nhiều ảnh cùng lúc), kết quả bị "lẫn" giữa các ảnh khác nhau. Đã xác nhận bug này **tái hiện cả ở bản production** (`next build && next start`), không phải chỉ lỗi riêng của `next dev` — nên nếu bỏ qua sẽ ảnh hưởng thật đến người dùng cuối trên bản deploy. Test từng ảnh riêng lẻ (không đồng thời) luôn cho kết quả đúng — xác nhận đúng là race condition do tải đồng thời, không phải ảnh bị hỏng.
+  - **Cách sửa**: vì ảnh trong Gallery đã được script Python nén sẵn về kích thước hợp lý cho web (tối đa 2000px, WebP chất lượng 85) từ trước, không cần Next.js tối ưu lại lần nữa — thêm prop `unoptimized` vào `<Image>` trong `Gallery.js` để bỏ qua hẳn `/_next/image`, ảnh được phục vụ trực tiếp dạng file tĩnh. Vừa loại bỏ hoàn toàn race condition, vừa nhanh hơn (không tốn CPU server xử lý lại mỗi lần request).
+  - Đã xác nhận hết bug bằng cách chạy lại đúng kịch bản gây lỗi (mở Gallery, tải đồng thời cả 25 ảnh) nhiều lần liên tiếp trên bản production fresh — 0/25 ảnh sai, lặp lại 3 lần đều sạch.
+- **Bug thật phát hiện khi kiểm tra bằng Playwright** (không phải bug của riêng tính năng Gallery): `IntroSplash`, `Nav`, và `Gallery` đều tự ý gán thẳng `document.body.style.overflow` để khoá/mở cuộn trang — component nào chạy cleanup sau cùng sẽ "thắng" và ghi đè giá trị của component kia. Cụ thể: nếu người dùng ấn tag Gallery trong lúc intro splash vẫn đang chạy nốt hiệu ứng biến mất (trong ~2.1s đầu tiên), lúc intro splash dọn dẹp xong sẽ vô tình mở khoá cuộn trang dù Gallery vẫn đang mở. Sửa tận gốc bằng cách tạo `lib/scrollLock.js` — 1 bộ đếm dùng chung (`lockScroll()`/`unlockScroll()`), thay vì mỗi component tự gán trực tiếp; cả 3 nơi (`IntroSplash.js`, `Nav.js`, `Gallery.js`) đều đã chuyển sang dùng chung hàm này.
+- Đã kiểm tra bằng Playwright: tag hiện đúng vị trí, ấn mở overlay đúng ảnh + đúng số lượng, khoá/mở cuộn trang chính xác (kể cả khi 2 overlay có thể chồng thời điểm), đóng được bằng cả 3 cách (X, Esc, đã test), hiển thị đúng mobile (390px), bỏ qua animation khi bật Reduce Motion. Đã test full quy trình xử lý ảnh bằng 1 ảnh giả (tạo — xử lý — kiểm tra hiển thị — xoá sạch dấu vết) để xác nhận script hoạt động đúng trước khi bàn giao; gallery hiện tại trống, sẵn sàng cho ảnh thật của Ricky. `npm run lint` và `npm run build` đều sạch.
+
+---
+
 ## E. Các trang con còn lại (About/Projects/Contact) — ⏸️ Tạm dừng
 
 Theo yêu cầu của bạn (2026-09-11): **không polish thêm** các trang `/about`, `/projects`, `/contact` cho đến khi bạn chủ động muốn làm chi tiết từng trang. Ghi chú để nhớ khi quay lại:
@@ -229,6 +248,8 @@ Dark mode, blog, CMS, analytics, custom domain, contact-form backend thật, aut
 | 2026-09-14 | Headline "Network & IT Support Professional" đổi thành chữ trắng, to, nổi bật |
 | 2026-09-14 | **Hero đổi cấu trúc lớn**: từ "ảnh nhỏ đứng giữa" sang "ảnh nền phủ toàn khung" dùng ảnh ngang thật của Ricky (không còn ảnh thử nghiệm) |
 | 2026-09-14 | Thêm intro splash (màn hình chào đen, 1.5s, chỉ hiện 1 lần/phiên tab) trước khi vào Home |
+| 2026-09-14 | Thêm Gallery ảnh cá nhân ở trang Photography, kèm quy trình `gallery-inbox/` + script nén ảnh tự động để Ricky tự thêm ảnh về sau |
+| 2026-09-14 | Tạo `lib/scrollLock.js` dùng chung cho mọi overlay khoá cuộn trang (IntroSplash/Nav/Gallery) — tránh lỗi ghi đè lẫn nhau khi 2 overlay hoạt động cùng lúc |
 
 ---
 

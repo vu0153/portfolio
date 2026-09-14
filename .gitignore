@@ -36,6 +36,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# raw photos dropped for gallery processing — never commit originals
+/gallery-inbox/*
+!/gallery-inbox/README.md
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

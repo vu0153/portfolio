@@ -1,4 +1,5 @@
 import StoryPhoto from "@/components/photography/StoryPhoto";
+import Gallery from "@/components/photography/Gallery";
 import Reveal from "@/components/landing/Reveal";
 import CircleButton from "@/components/landing/CircleButton";
 
@@ -11,6 +12,8 @@ export const metadata = {
 export default function PhotographyPage() {
   return (
     <div className="bg-paper text-ink">
+      <Gallery />
+
       {/* Header */}
       <Reveal className="mx-auto flex max-w-[1000px] flex-col gap-4 px-[var(--page-x)] pt-16 pb-10 sm:pt-24">
         <p className="text-xs tracking-[0.14em] text-muted uppercase">Photography</p>

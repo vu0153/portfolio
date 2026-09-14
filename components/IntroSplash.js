@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { lockScroll, unlockScroll } from "@/lib/scrollLock";
 
 const HOLD_MS = 1500;
 const LEAVE_MS = 600;
@@ -35,10 +36,9 @@ export default function IntroSplash() {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = phase ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
+    if (!phase) return undefined;
+    lockScroll();
+    return () => unlockScroll();
   }, [phase]);
 
   if (!phase) return null;

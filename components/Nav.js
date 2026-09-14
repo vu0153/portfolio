@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import profile from "@/data/profile";
+import { lockScroll, unlockScroll } from "@/lib/scrollLock";
 
 const links = [
   { href: "/", label: "Home" },
@@ -32,10 +33,9 @@ export default function Nav() {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = open ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
+    if (!open) return undefined;
+    lockScroll();
+    return () => unlockScroll();
   }, [open]);
 
   useEffect(() => {
