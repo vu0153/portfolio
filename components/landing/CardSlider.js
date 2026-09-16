@@ -175,7 +175,7 @@ export default function CardSlider({ children, labels = [] }) {
         return (
           <div
             key={i}
-            className="cover-card absolute top-1/2 left-1/2 h-[78vh] max-h-[760px] w-[68vw] max-w-[980px] touch-pan-y overflow-y-auto rounded-2xl border-2 border-dark-text/30 shadow-[0_40px_100px_rgba(0,0,0,0.65)]"
+            className="cover-card absolute top-1/2 left-1/2 h-[78vh] max-h-[760px] w-[68vw] max-w-[980px] touch-pan-y overflow-y-auto rounded-2xl border-2 border-dark-text/30 shadow-[0_40px_100px_rgba(0,0,0,0.65)] sm:h-auto sm:aspect-[8/5]"
             style={{
               transform: `translate(-50%, -50%) translateX(${translateX}vw) scale(${scale}) rotateY(${rotateY}deg)`,
               opacity,

@@ -15,12 +15,12 @@ export default function LandingHero() {
         fill
         priority
         sizes="100vw"
-        className="object-cover object-[50%_20%] sm:object-[85%_20%] lg:object-[95%_15%]"
+        className="object-cover object-[50%_20%] sm:object-[100%_25%]"
       />
 
       <div
         aria-hidden
-        className="absolute inset-0 bg-[linear-gradient(to_top,black_0%,black_68%,rgba(0,0,0,0.7)_82%,transparent_100%)] sm:bg-[linear-gradient(to_right,black_0%,black_32%,transparent_55%)]"
+        className="absolute inset-0 bg-[linear-gradient(to_top,black_0%,black_68%,rgba(0,0,0,0.7)_82%,transparent_100%)] sm:bg-[linear-gradient(to_right,black_0%,black_28%,transparent_48%)]"
       />
 
       <div

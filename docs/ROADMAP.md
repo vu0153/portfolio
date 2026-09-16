@@ -306,6 +306,23 @@ Ricky muốn 2 nút điều hướng trái/phải của CardSlider trông và ho
 
 ---
 
+## C8. Sửa lỗi khuôn mặt bị che ở card Home tuỳ theo tỉ lệ màn hình (2026-09-16) — ✅ Xong
+
+Ricky báo: ở các tỉ lệ màn hình khác nhau, card Home bị lệch và che mất khuôn mặt; yêu cầu dịch vùng crop ảnh chân dung lệch hẳn về bên phải để giảm rủi ro.
+
+**Nguyên nhân gốc**: className của `.cover-card` trong `CardSlider.js` là `h-[78vh] max-h-[760px] w-[68vw] max-w-[980px]` — tỉ lệ khung hình thực tế của card thay đổi tuỳ theo việc vh/max-h hay vw/max-w đang là giới hạn "chặn" tại một kích thước màn hình cụ thể. `object-fit: cover` tính `scale = max(Cw/Sw, Ch/Sh)`; khi tỉ lệ khung (Ca = Cw/Ch) ≥ tỉ lệ ảnh gốc (Sa = Sw/Sh), khung bị "chặn theo chiều rộng" và `object-position` trục X **hoàn toàn không có tác dụng** (chỉ trục Y có tác dụng); ngược lại khi Ca < Sa thì chặn theo chiều cao và chỉ trục X có tác dụng. Vì kích thước card không cố định, quy tắc này "lật" qua lại một cách khó đoán tuỳ hình dạng màn hình — đúng như hiện tượng Ricky mô tả.
+
+**Cách sửa duy nhất triệt để**: khoá khung hình card về một tỉ lệ CỐ ĐỊNH, nhỏ hơn tỉ lệ ảnh gốc — đảm bảo luôn ở chế độ "chặn theo chiều cao" (trục X luôn có tác dụng) ở mọi kích thước màn hình.
+
+- `CardSlider.js`: thêm `sm:h-auto sm:aspect-[8/5]` vào `.cover-card` — khoá tỉ lệ 1.6 (nhỏ hơn tỉ lệ ảnh hero gốc 1.778) từ breakpoint `sm:` trở lên.
+- `LandingHero.js`: gộp `object-[50%_20%] sm:object-[85%_20%] lg:object-[95%_15%]` thành 1 mức duy nhất `sm:object-[100%_25%]` (không cần chia nhỏ theo `lg:`/`xl:` nữa vì tỉ lệ card giờ cố định) — đẩy X lên mức tối đa 100% theo đúng yêu cầu "lệch hẳn về bên phải"; đồng thời siết gradient từ `black_32%, transparent_55%` xuống `black_28%, transparent_48%` để bù lại việc card khung cố định có ít "khoảng trống" ngang hơn để dịch chuyển vùng crop so với trước.
+- Đã kiểm tra bằng Playwright trên **6 tỉ lệ màn hình khác nhau** cố ý chọn để bao trùm cả 2 chế độ lỗi cũ: 1440×900, 1920×1080, 2560×1080 (siêu rộng/thấp), 1280×1024 (gần vuông), 1366×768, 1024×1366 (dọc, iPad) — khuôn mặt hiển thị rõ ràng, đúng vị trí ở cả 6 trường hợp.
+- Regression check: lint/build sạch; reduced-motion vẫn đúng (card Home tĩnh, không lỗi); cuộn qua đủ cả 5 card (Home/Technical Projects/Photography/About/Get in touch) — card Photography (cũng dùng ảnh nền + `object-position` riêng) không bị ảnh hưởng bởi tỉ lệ khung mới; 3 card chữ (Projects/About/Contact) không bị tràn nội dung do đổi chiều cao.
+
+**Phát hiện thêm (chưa sửa, không thuộc phạm vi yêu cầu lần này)**: Ở độ rộng điện thoại (dưới breakpoint `sm:`, ví dụ 400px), card Home vẫn dùng công thức kích thước động cũ (`h-[78vh] w-[68vw]`, chưa có bản `sm:` ghi đè) nên card rất hẹp/cao. Tuy nhiên nguyên nhân khuôn mặt khó thấy trên mobile **không phải** do lỗi "lật chế độ" nói trên (đã kiểm chứng: toàn bộ chiều cao ảnh vẫn hiển thị đúng), mà do gradient tối dành riêng cho mobile (`to_top, black 0%→68%`) kết hợp với card khá thấp khiến phần lớn ảnh bị phủ đen để chữ dễ đọc — đây là hành vi đã có từ trước, không bị ảnh hưởng bởi lần sửa này. Nếu Ricky muốn khuôn mặt rõ hơn cả trên điện thoại, sẽ cần chỉnh riêng layout/gradient mobile (việc riêng, chưa làm).
+
+---
+
 ## D. Trang Photography — ✅ Xong (2026-09-14)
 
 Ricky cung cấp 1 file Word (`story/story.docx`, đã xoá sau khi xử lý xong) kể câu chuyện nhiếp ảnh của mình bằng tiếng Việt, chú thích ảnh bằng `[số]`, cùng 21 ảnh (15 ảnh đánh số `[1]`-`[15]` theo câu chuyện + 6 ảnh phong cảnh đồng quê Adelaide không đánh số, Ricky cho phép tự viết thêm 1 đoạn cho nhóm ảnh này).
