@@ -164,6 +164,34 @@ body {
   animation: globe-spin 10s linear infinite;
 }
 
+@keyframes circuit-flow {
+  to {
+    stroke-dashoffset: -240;
+  }
+}
+
+.circuit-line {
+  animation: circuit-flow linear infinite;
+}
+
+.circuit-node {
+  opacity: 0.6;
+}
+
+@keyframes circuit-icon-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.95;
+  }
+}
+
+.circuit-icon {
+  animation: circuit-icon-pulse 4s ease-in-out infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reveal {
     opacity: 1 !important;
@@ -192,5 +220,14 @@ body {
   .gallery-pulse {
     animation: none;
     opacity: 0;
+  }
+
+  .circuit-line {
+    animation: none;
+  }
+
+  .circuit-icon {
+    animation: none;
+    opacity: 0.6;
   }
 }

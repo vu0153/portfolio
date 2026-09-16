@@ -49,9 +49,11 @@ export default function Nav() {
 
   const showTextLinks = !scrolled;
 
+  if (pathname === "/") return null;
+
   return (
     <header
-      className={`sticky top-0 z-50 border-b bg-background transition-shadow ${
+      className={`sticky top-0 z-50 border-b bg-background text-ink transition-shadow ${
         scrolled ? "border-black/10 shadow-sm dark:border-white/15" : "border-transparent"
       }`}
     >

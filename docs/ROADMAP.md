@@ -21,6 +21,7 @@ Tài liệu này là nguồn tham chiếu chính (source of truth) cho tiến đ
 | C. Trang chủ — Đợt 2 (chuyển động cơ bản) | ✅ Xong toàn bộ — chỉ còn 2 mục chờ ảnh project/photography thật |
 | C. Trang chủ — Đợt 3 (tương tác nâng cao) | ✅ Xong phần làm được ngay — cursor "VIEW" chờ ảnh project thật |
 | C. Intro splash (màn hình chào) | ✅ Xong (2026-09-14) |
+| **C2. Home — chuyển sang Card Slider 3D** | ✅ Xong (2026-09-15) — **thay thế hoàn toàn** bố cục cuộn dọc mô tả ở Đợt 1/2/3 bên dưới, xem chi tiết cuối mục C |
 | D. Trang Photography | ✅ Xong — trang câu chuyện đầy đủ, 21 ảnh (2026-09-14) |
 | D2. Gallery ảnh cá nhân | ✅ Xong — tag + overlay + quy trình nén ảnh tự động (2026-09-14) |
 | E. Trang About/Projects/Contact | ⏸️ Tạm dừng — bạn sẽ làm chi tiết từng trang riêng |
@@ -161,6 +162,148 @@ Quan điểm: chuyên nghiệp không phải là *thêm* animation, mà là anim
 - Đã kiểm tra bằng Playwright (script tạm, đã xoá sau khi xong): hiện đúng lúc tải trang lần đầu, giữ ~1.5s, chuyển cảnh mượt rồi biến mất; không hiện lại khi điều hướng nội bộ trong cùng tab; bỏ qua hoàn toàn khi bật Reduce Motion; cuộn trang bị khoá lúc hiện và mở lại đúng lúc biến mất; hiển thị đúng ở mobile (390px). `npm run lint` và `npm run build` đều sạch.
 - Vòng tròn đen nhỏ có chữ "N" ở góc dưới trái trong ảnh chụp màn hình lúc `npm run dev` là **Next.js Dev Indicator** (Next tự chèn, chỉ có ở dev, không xuất hiện ở bản production) — không phải lỗi của site.
 
+**Hero làm lại — giảm độ chiếm ưu thế của ảnh chân dung, ưu tiên tín hiệu năng lực (2026-09-14):** một người bạn của Ricky xem web nhận xét rằng thấy ảnh mặt trước tiên thay vì các dự án, cảm giác giống "khoe bản thân" hơn là gây ấn tượng về năng lực — đặc biệt đáng lưu ý vì Ricky định vị là ứng viên Network/IT Support, không phải designer/photographer nơi chân dung cá nhân hợp lý làm yếu tố dẫn dắt.
+
+- Bỏ layout ảnh phủ toàn khung (full-bleed) đã làm ở bản trước — ảnh giờ là 1 khung chứa vừa phải (`aspect-[4/3]`, rộng tối đa 380px ở desktop), đặt bên phải, không còn là nền của cả section.
+- Đưa nội dung "năng lực" lên hàng đầu bên trái: tên (nhỏ, khiêm tốn, không phải yếu tố nổi bật), headline 3 dòng Network/Cybersecurity/IT Support (giữ nguyên, đổi từ chữ trắng-trên-ảnh sang chữ đậm màu ink trên nền `bg-hero`), thêm câu tagline định vị (`profile.tagline`), và **thêm mới** 1 hàng "pill" hiển thị nhanh 4 chứng chỉ (CCNA, Cisco CyberOps Associate, CompTIA Security+, MCSA) — tín hiệu năng lực cụ thể, dễ quét mắt, thay vì phải cuộn xuống mới thấy.
+- **Bỏ hẳn hiệu ứng tên chạy ngang (marquee) trên ảnh** — đây là chi tiết mang tính "personal-brand" (kiểu Dennis Snellenberg) mà Ricky không cần nữa khi mục tiêu là tuyển dụng kỹ thuật, không phải xây thương hiệu cá nhân. Component `MarqueeText.js` vẫn giữ nguyên file (không dùng ở đâu khác), có thể dùng lại sau nếu muốn.
+- Thứ tự đọc trên mobile (xếp dọc): tên → headline → tagline → chứng chỉ → ảnh — đúng ý "thấy năng lực trước, ảnh sau" mà không cần CSS reorder phức tạp, chỉ nhờ thứ tự DOM tự nhiên.
+- Đã kiểm tra: lint/build sạch, 1 `h1` duy nhất, không lỗi console, hiển thị đúng ở desktop (1440px), laptop (1024px) và mobile (390px), route links + LocationBadge vẫn hoạt động đúng.
+
+**Hero đổi hướng lần 2 — quay lại ảnh lớn, nhưng theo kiểu "khung đen chuyển gradient" thay vì full-bleed trắng như trước (2026-09-14, ngay sau bản trên):** sau khi xem bản thu nhỏ ảnh, Ricky lại muốn ảnh lớn/ấn tượng trở lại — nhưng lần này theo hướng khác hẳn bản full-bleed gốc: nửa trái là khung nền đen, chuyển gradient dần sang ảnh gương mặt ở bên phải, nội dung nằm trong vùng đen đó với độ tương phản cao (chữ trắng trên nền đen) thay vì nằm đè trực tiếp lên ảnh — vẫn giữ đúng tinh thần "nội dung phải nổi bật" từ góp ý của bạn Ricky, chỉ đổi cách đạt được (tương phản mạnh thay vì ảnh nhỏ).
+
+- Ảnh `object-position` chỉnh riêng theo từng breakpoint để mặt luôn rõ, không bị khung đen che — **đã sửa 2 lần theo phản hồi trực tiếp của Ricky** ("hình bị che nửa mặt", rồi "dịch qua thêm, mặt phải nằm chính giữa phần rõ"). Lần sửa thứ 2 phát hiện ra: ở màn hình rộng (≥1280px, chế độ width-constrained), toàn bộ chiều rộng ảnh gốc đã hiển thị đủ nên chỉnh `object-position` theo trục X **không còn tác dụng gì cả** — thứ thực sự cần chỉnh là độ rộng vùng gradient đen (thu hẹp điểm "trong suốt hoàn toàn" từ 85% xuống còn 50%). Ở màn hình hẹp hơn (1024-1279px, chế độ height-constrained), `object-position` vẫn có tác dụng nhưng bị giới hạn hình học (không đủ "khoảng trống" trong ảnh gốc để dịch mặt vào hẳn vùng rõ) — đã chấp nhận đây là điểm trung gian chưa hoàn hảo ở dải laptop hẹp, ưu tiên tối ưu cho dải rộng hơn (nơi Ricky thực sự đang xem).
+- Gradient: `to_right` (đen bên trái → trong suốt bên phải) ở desktop/tablet, `to_top` (đen bên dưới → trong suốt bên trên) ở mobile — đổi hướng theo breakpoint vì bố cục mobile xếp dọc (ảnh lộ ra ở trên, nội dung ở khối đen bên dưới) thay vì xếp ngang.
+- **Thêm mới `components/landing/CircuitPattern.js`** — hoạ tiết mạch điện/network chạy phía sau nội dung, tự vẽ bằng SVG thuần (không dùng thư viện/icon ngoài): các đường kẻ dạng mạch in (circuit trace) với hiệu ứng "dòng chảy" (`stroke-dashoffset` animate), cùng 4 icon tự vẽ theo đúng phong cách icon sẵn có của site (line-art, `stroke="currentColor"`, giống icon địa cầu ở `LocationBadge` và icon máy ảnh ở `Gallery`): **khiên bảo mật, ổ khoá, sóng wifi, chip điện tử** — đúng chủ đề Network/Cybersecurity theo yêu cầu, tự nhấp nháy nhẹ (opacity pulse) độc lập với đường mạch. Toàn bộ hoạ tiết để độ mờ rất thấp (~14%) để không cạnh tranh với nội dung, tắt hẳn animation khi bật Reduce Motion.
+- **Nav overlay trong khung hero (chỉ ở trang Home)**: `components/Nav.js` thêm biến `isHome`/`overlay` — khi ở Home và chưa cuộn, header chuyển từ `sticky` (chiếm chỗ trong luồng layout như mọi trang khác) sang `fixed` (nổi đè lên Hero, không chiếm chỗ), nền trong suốt, chữ trắng — tạo cảm giác menu "nằm trong" khung hình đen của Hero đúng như yêu cầu. Khi cuộn quá 80px, hoặc ở bất kỳ trang nào khác ngoài Home, Nav giữ nguyên hành vi cũ (sticky, nền trắng, chữ đen) — **không đụng đến bất kỳ trang nào khác**, đã kiểm tra riêng trang `/about` để xác nhận không bị ảnh hưởng. Cố tình không chuyển đổi qua lại giữa `fixed`/`sticky` theo scroll ngay trên Home (chỉ đổi màu/nền) để tránh hiện tượng giật layout khi vừa cuộn qua ngưỡng 80px.
+- Đã kiểm tra: lint/build sạch, 1 `h1` duy nhất, không lỗi console ở cả Home lẫn About, hiển thị đúng ở 1920px/1440px/mobile (390px), circuit pattern tắt animation đúng khi bật Reduce Motion, Nav chuyển đúng giữa trong suốt ⇄ trắng khi cuộn, trang About/Projects/Contact hoàn toàn không đổi.
+
+**3 mục điều hướng cuối Hero chuyển thành cột dọc bên phải, có icon + hover nổi bật kiểu nút Gallery (2026-09-14, cùng chuỗi yêu cầu):** trước đó "Technical Projects / Resume / Photography" nằm thành 1 hàng ngang cuối Hero, chỉ có chữ. Ricky muốn dịch cả 3 qua hẳn bên phải, xếp dọc, có icon, hover nổi bật giống nút tròn Gallery, và thêm 1 vùng đen gradient từ ảnh sang bên phải để làm nền cho khu vực đó (tương tự khung đen bên trái nhưng ở phía đối diện).
+
+- **Component mới `components/landing/HeroRoutes.js`** (`"use client"`) — tách riêng khỏi `LandingHero.js` vì cần state/interactivity (hover magnetic) mà Hero không cần. Mỗi mục có icon tự vẽ bằng SVG (cùng phong cách line-art với các icon khác của site, không dùng thư viện ngoài): **folder** (Technical Projects), **tài liệu/document** (Resume), **máy ảnh** (Photography, cùng kiểu với icon ở `Gallery.js`).
+- **Hover "nổi bật giống nút Gallery"**: áp dụng đúng kỹ thuật "magnetic hover" đã có ở `CircleButton.js`/`Gallery.js` (bám nhẹ theo chuột khi rê gần, `translate` + `scale(1.05)`, tự tắt khi bật Reduce Motion) cho từng mục — thay vì chỉ đổi màu chữ như link thường. Thêm nền pill (`hover:bg-dark-text/10`) hiện ra sau icon+chữ khi hover để tăng độ nổi bật.
+- Gradient của Hero mở rộng thêm 2 điểm dừng mới để tạo vùng đen thứ 2 ở bên phải: `black 0% → black 32% → trong suốt 50%-64% (vùng mặt hiện rõ) → black 84%-100%` (vùng chứa cột điều hướng mới) — ảnh giờ nằm "kẹp giữa" 2 khung đen (trái: nội dung chính, phải: điều hướng), đúng ý yêu cầu.
+- Bố cục: `HeroRoutes` là con trực tiếp của `<section>` Hero (không lồng trong khối nội dung có padding) — mobile: xếp dọc bình thường trong luồng trang (xuất hiện sau các pill chứng chỉ, đúng thứ tự đọc từ trên xuống); desktop (`sm:` trở lên): `position:absolute`, `inset-y-0 right-0`, canh giữa theo chiều dọc, không chiếm chỗ trong layout — cùng kỹ thuật overlay đã dùng cho Nav.
+- Đã kiểm tra: lint/build sạch, không có link trùng lặp trong DOM (đếm được đúng 3 link "01/02/03" trong Hero, tách biệt với link cùng tên ở Nav), hiệu ứng magnetic tắt đúng khi bật Reduce Motion (`transform` rỗng sau hover), hiển thị đúng ở 2000px/1440px/1024px/mobile.
+
+---
+
+## C2. Home — chuyển hẳn sang Card Slider 3D (2026-09-15) — **THAY ĐỔI KIẾN TRÚC LỚN**
+
+Ricky nhận góp ý và muốn đổi hẳn cách trình bày Home: thay vì cuộn dọc qua từng section (Hero → giới thiệu → preview Projects → preview Photography → CTA liên hệ) như mô tả ở mục C phía trên, Home giờ là **5 "card" toàn màn hình, trượt ngang qua lại** kiểu hiệu ứng khối lập phương 3D, nền đen toàn bộ:
+
+1. Home (Hero — giữ nguyên ảnh + gradient + hoạ tiết mạch điện đã làm)
+2. Projects (rút gọn, có nút "View all projects" → `/projects`)
+3. Photography (rút gọn, có nút "View photography" → `/photography`)
+4. About (**card hoàn toàn mới**, có nút "View full background" → `/about`)
+5. Contact (giữ nguyên, không cần nút "View more" vì đã đủ ngắn gọn)
+
+**Quyết định phạm vi quan trọng** (đã hỏi Ricky trước khi làm, tránh đoán sai làm lại từ đầu): các trang con `/about`, `/projects`, `/photography`, `/contact` **giữ nguyên 100%, không đụng vào** — chúng vẫn là nơi chứa đầy đủ chi tiết (Experience/Skills/Certs/Education, toàn bộ danh sách project, câu chuyện + Gallery 21+25 ảnh...). Mỗi card trên Home chỉ là **bản tóm tắt/preview**, có nút "View more" dẫn sang trang đầy đủ cho các card nhiều thông tin (Projects/Photography/About); Home và Contact không cần vì đã đủ ngắn.
+
+**Đã làm:**
+- **`components/landing/CardSlider.js`** (mới) — cơ chế trượt 3D kiểu khối lập phương: dùng CSS `perspective` + `transform-style: preserve-3d`, mỗi card xoay `rotateY(offset * 90deg) translateZ(50vw)` (offset = vị trí card trừ card đang active). Card đang active có offset=0 nên đứng thẳng nhìn chính diện; 2 card liền kề xoay 90 độ nằm ở 2 "mặt bên" của khối lập phương, sẵn sàng xoay vào khi chuyển slide.
+  - **Lỗi toán học gặp phải lúc đầu**: card active bị phóng to/méo bất thường (như đang zoom sát mặt). Nguyên nhân: `translateZ(50vw)` đẩy card active ra phía trước (gần camera hơn) dù `rotateY(0deg)` — thiếu bước "kéo lùi cả khối" lại. Sửa bằng cách thêm `transform: translateZ(-50vw)` cho toàn bộ container cha (kỹ thuật chuẩn khi làm 3D cube gallery: mỗi mặt tự đẩy ra theo trục Z cục bộ của nó, container mẹ phải lùi lại đúng bằng bán kính để mặt trước nằm đúng vị trí "phẳng" ban đầu).
+  - Điều khiển: nút mũi tên trái/phải, chấm tròn chỉ số (dot indicator) ở dưới cùng, phím mũi tên trái/phải bàn phím, cuộn chuột (chuyển bánh xe dọc thành chuyển slide ngang, có khoá 700ms tránh trượt qua nhiều slide 1 lần), và vuốt chạm thật trên di động (dùng cơ chế chạm tự viết — theo dõi toạ độ X lúc bắt đầu/kết thúc chạm, vuốt quá 60px thì chuyển slide).
+  - Card không active được gắn `inert` + `aria-hidden` để người dùng bàn phím không lỡ Tab vào link/nút ẩn (Next.js/React 19 hỗ trợ thuộc tính `inert` trực tiếp — lưu ý: phải truyền `inert={boolean}`, **không** truyền chuỗi rỗng `inert=""` vì React sẽ cảnh báo và coi là `false`).
+  - Tự tắt hiệu ứng xoay 3D khi bật Reduce Motion (`transition: none` trên `.cube-face`) — vẫn chuyển slide được, chỉ là chuyển ngay lập tức không có animation.
+- **Bỏ Nav (thanh menu) hoàn toàn khỏi Home**: Ricky nói "nếu đã dùng kiểu này thì không cần nav menu" vì bản thân slider đã là điều hướng. `components/Nav.js` thêm `if (pathname === "/") return null;` — **chỉ ẩn ở Home**, các trang `/about /projects /photography /contact` vẫn hiện Nav bình thường để có đường quay lại/đi các trang khác. Đã bỏ luôn phần logic "overlay trong suốt" đã làm ở mục C phía trên vì không còn cần thiết (Nav không còn render trên Home nữa).
+- **Component mới `components/landing/AboutPreview.js`** — card tóm tắt About: câu giới thiệu ngắn (lấy lại từ `IntroStatement.js` cũ), vai trò gần nhất + học vấn (2 cột), nút "View full background". **Lưu ý tính chính xác**: ban đầu định ghi nhãn vai trò gần nhất là "Currently" (hiện tại) — nhưng vai trò đó (DIGI-TEXX, 2021-2023) đã kết thúc, Ricky hiện đang đi tìm việc chứ không phải đang làm ở đó. Đã sửa thành "Most recent role" để không nói sai sự thật.
+- **`ProjectsPreview.js` / `PhotographyPreview.js` / `ContactCTA.js`**: đổi nền từ `bg-paper` (sáng) / `bg-dark` sang `bg-black` thuần, chữ sang tông `dark-text`, thêm `h-full flex flex-col justify-center` để vừa khít 1 "card". `ProjectsPreview` bỏ phần "Other Projects" khỏi card (chỉ giữ 4 project chính) vì nút "View more" đã dẫn sang trang đầy đủ.
+- **`IntroStatement.js` không còn dùng ở Home** — nội dung đã chuyển vào `AboutPreview.js`, file gốc vẫn giữ (không dùng ở đâu khác), theo đúng quy ước "giữ file phòng khi cần lại" đã dùng cho `ResumePreview.js`/`MarqueeText.js` trước đây.
+- **`app/page.js`** viết lại hoàn toàn: bọc 5 card trong `<CardSlider>` thay vì render tuần tự như trước.
+- Đã kiểm tra: lint/build sạch, không lỗi console; xác nhận bằng Playwright: Nav vắng mặt trên Home (đếm `<header>` = 0) nhưng vẫn hiện ở `/about` (= 1); chuyển slide đúng bằng nút mũi tên, chấm tròn, phím mũi tên bàn phím; vuốt chạm thật (giả lập qua CDP `Input.dispatchTouchEvent`, không phải giả lập bằng chuột vì không phản ánh đúng cử chỉ chạm) hoạt động đúng trên di động; slide cuối cùng tự ẩn nút "Next", slide đầu tự ẩn nút "Previous"; Reduce Motion tắt đúng animation xoay (`transitionDuration: 0s`) nhưng vẫn chuyển được slide.
+- **Hạn chế đã biết, chưa tối ưu**: ở màn hình di động hẹp, một số card nhiều nội dung (Home với đủ 3 mục điều hướng có icon, Projects với 4 project) hơi vượt quá 1 màn hình — đã có `overflow-y-auto` để cuộn được bên trong card nên không bị vỡ layout, nhưng chưa thật sự "gọn đúng 1 màn hình không cuộn" như tinh thần ban đầu. Có thể cần giảm khoảng cách/cỡ chữ trên mobile nếu Ricky muốn hoàn thiện thêm.
+
+**Cards thu nhỏ thành "cửa sổ" nổi giữa nền đen (2026-09-15, cùng ngày):** Ricky gửi 1 video quay màn hình 1 portfolio khác (dùng ffmpeg tách khung hình từ file `.MOV` để xem, vì tool đọc file không đọc trực tiếp được video) làm ví dụ — card ở đó không phủ kín màn hình mà là 1 "cửa sổ" bo góc, có đổ bóng, nằm giữa nền đen, thấy rõ khoảng đen xung quanh, card kế bên hé lộ một phần lúc xoay 3D.
+
+- Đổi cấu trúc `CardSlider.js`: thêm 1 "stage" chứa cube nhỏ hơn hẳn viewport (`w-[90vw] max-w-[1300px] h-[80vh] max-h-[760px]`, canh giữa màn hình đen full-bleed) thay vì để mỗi card phủ kín `100vw x 100dvh` như bản đầu. Bán kính `translateZ` của khối lập phương đổi theo tương ứng (`45vw` thay vì `50vw`, ăn khớp với kích thước stage mới).
+- Mỗi card thêm `rounded-2xl` + viền mờ (`border-dark-text/10`) + đổ bóng đậm (`shadow-[0_40px_100px_rgba(0,0,0,0.65)]`) — viền mờ đặc biệt cần thiết vì các card đều nền đen thuần, không có viền thì ranh giới "cửa sổ" so với nền đen phía sau gần như vô hình (đã tự phát hiện vấn đề này khi chụp thử card Projects — sau đó mới thêm viền).
+- Đã kiểm tra lại toàn bộ sau khi đổi kích thước: lint/build sạch, Nav vẫn vắng mặt đúng ở Home/hiện đúng ở `/about`, chuyển slide bằng nút/phím/cuộn/vuốt chạm đều hoạt động, Reduce Motion vẫn tắt đúng animation xoay.
+
+---
+
+## C3. Home — viết lại `CardSlider.js` thành coverflow liên tục thay vì khối lập phương rời rạc (2026-09-15, cùng ngày) — **THAY ĐỔI KIẾN TRÚC LỚN LẦN 2**
+
+Ricky gửi 1 bản đặc tả rất chi tiết (bằng tiếng Anh, dài, có code mẫu) yêu cầu bỏ hẳn kiểu "xoay khối lập phương rời rạc" (nhảy thẳng giữa 2 trạng thái 0°/90°) đã làm ở mục C2, thay bằng 1 hệ thống **liên tục theo vị trí** kiểu "coverflow": mọi thuộc tính hình ảnh của mọi card (vị trí ngang, độ phóng to, góc xoay, độ mờ, độ sáng, độ nhoè, z-index) đều được tính liên tục từ khoảng cách của card đó tới vị trí đang xem — không có bước nhảy trạng thái đột ngột nào, kể cả khi đang kéo/cuộn dở dang.
+
+**Đã làm — viết lại hoàn toàn `CardSlider.js`:**
+- Thay biến `active` (số nguyên, rời rạc) bằng `position` (số thực liên tục) — ví dụ `position = 1.37` nghĩa là đang ở giữa card 1 và card 2, lệch 37%.
+- Với mỗi card, tính `relative = index - position`, `distance = |relative|`, rồi suy ra toàn bộ style bằng nội suy tuyến tính (hàm `lerp`): `translateX = relative * 58vw`, `scale` từ 1 (ở giữa) giảm dần còn ~0.88 khi cách 1 card, `rotateY` từ 0° tăng dần tới ~8° nghiêng theo hướng ngược lại của `relative`, `opacity`/`brightness`/`blur` cũng giảm dần liên tục theo `distance` — card càng xa trung tâm càng mờ, tối, nhoè, nhỏ, nghiêng — không có ngưỡng nhảy bậc nào.
+- **3 cách tương tác đều cập nhật `position` liên tục theo thời gian thực** thay vì nhảy thẳng:
+  - Cuộn chuột (wheel): cộng dồn `deltaY` vào `position` mỗi lần cuộn, có khoá debounce 160ms — hết 160ms không cuộn nữa mới "chốt" (snap) về số nguyên gần nhất.
+  - Kéo chuột / vuốt chạm (drag): dùng chung 1 cơ chế Pointer Events cho cả chuột lẫn cảm ứng — bám theo đúng vị trí con trỏ/ngón tay theo thời gian thực trong lúc kéo (không có độ trễ), chỉ "chốt" về số nguyên gần nhất khi thả tay.
+  - Phím mũi tên / nút bấm / chấm tròn: chốt thẳng tới vị trí đích, có transition mượt (dùng `var(--ease-out)` đã có sẵn của dự án — đường cong "vào nhanh, dừng êm" đúng như Ricky mô tả).
+- Trong lúc đang kéo/cuộn dở dang, tắt hẳn CSS `transition` (để bám sát input tức thời, không lag); chỉ bật lại `transition` sau khi buông tay/cuộn xong để có hiệu ứng "chốt" mượt vào vị trí cuối.
+- Reduce Motion: tắt hẳn hiệu ứng `perspective`/xoay/mờ/nhoè (rơi thẳng về trạng thái phẳng, không nội suy) — vẫn chuyển được card bình thường qua mọi cách tương tác.
+
+**2 lỗi thật gặp phải trong lúc làm, cả hai đều phát hiện qua kiểm tra kỹ chứ không phải đoán:**
+
+1. **`react-hooks/set-state-in-effect`** khi phát hiện Reduce Motion lúc mount — cùng dạng lỗi đã gặp 2 lần trước trong dự án (ở `IntroSplash.js`), sửa bằng đúng kỹ thuật cũ: lùi lần gọi `setState` đầu tiên vào trong `setTimeout(...,0)` thay vì gọi thẳng trong thân effect.
+
+2. **Bug thật khá tinh vi: kéo chuột bị "huỷ" (`pointercancel`) ngay sau bước di chuyển đầu tiên, chỉ khi bắt đầu kéo từ đúng vị trí các nút "Technical Projects/Resume/Photography" (`HeroRoutes.js`) hoặc nút tròn CTA (`CircleButton.js`).**
+   - Quá trình tìm nguyên nhân: ban đầu nghi ngờ do `setPointerCapture`, do cấu trúc CSS 3D (`perspective`/`transform`/`overflow-y-auto` lồng nhau) — đã tạo 1 trang HTML tĩnh cô lập y hệt cấu trúc CSS để loại trừ, kết quả trang tĩnh chạy hoàn hảo → xác nhận không phải do CSS. Tiếp tục thu hẹp bằng cách kéo chuột bắt đầu ở các toạ độ khác nhau trên cùng 1 card → phát hiện: kéo bắt đầu ở vùng ảnh/nội dung thường thì chạy tốt, kéo bắt đầu đúng trên các nút có hiệu ứng "bám chuột" (magnetic hover, đã làm ở `CircleButton.js`/`HeroRoutes.js` từ trước) thì luôn bị huỷ.
+   - **Nguyên nhân thật**: các nút magnetic-hover có `onMouseMove` riêng, tự gán `el.style.transform` để tạo hiệu ứng bám chuột — khi đang kéo cả slider (cũng liên tục ghi đè `transform` của card cha qua state React), 2 nơi cùng lúc chỉnh `transform` trên 2 phần tử lồng nhau theo cùng 1 sự kiện di chuột khiến Chromium huỷ hẳn phiên con trỏ (`pointercancel`) — hành vi này xảy ra thật ở trình duyệt thật (đã xác nhận bằng addEventListener thuần, không qua React), không phải lỗi riêng của công cụ test.
+   - **Cách sửa**: thêm 1 dòng chặn ở đầu `handleMouseMove` của cả `CircleButton.js` và `HeroRoutes.js`: bỏ qua nếu `e.buttons !== 0` (đang giữ chuột — tức đang kéo/click dở, không phải đang "hover" thông thường) — hiệu ứng bám chuột vốn chỉ có ý nghĩa khi rê chuột không bấm gì, nên chặn này không mất tính năng gì, chỉ tránh xung đột khi đang kéo.
+- Đã kiểm tra lại toàn bộ sau khi sửa: lint/build sạch, kéo chuột bắt đầu ở bất kỳ đâu trên card (kể cả ngay trên nút) đều hoạt động đúng, nút "View full background"/"View all projects" bấm được sau khi chuyển card bằng kéo, cuộn chuột nhiều nấc chuyển đúng slide, vuốt chạm thật trên di động (giả lập qua CDP) hoạt động đúng, Nav vẫn vắng mặt ở Home/hiện đúng ở các trang khác, Reduce Motion tắt đúng hiệu ứng nhưng vẫn điều hướng được.
+
+---
+
+## C4. Home — 6 tinh chỉnh giao diện cho CardSlider (2026-09-15, cùng ngày)
+
+Ricky gửi 6 góp ý cụ thể sau khi xem bản coverflow liên tục. Đã làm từng mục:
+
+1. **Nền và card trùng màu đen** → đổi nền ngoài cùng của `CardSlider.js` từ `bg-black` sang `bg-[#222225]` (xám đen), giữ nguyên các card màu đen thuần — giờ phân biệt rõ ranh giới "cửa sổ" với nền phía sau ngay cả khi không hover.
+2. **Viền card quá mỏng** → tăng từ `border` (1px, 10% opacity) lên `border-2` (2px, 30% opacity).
+3. **Mũi tên trái/phải quá nhỏ, không nổi bật** → bọc trong 1 vòng tròn có viền + nền mờ (`bg-black/30`, `border-dark-text/25`), khi hover phóng to (`hover:scale-110`) và chuyển nền sang màu xanh accent (`hover:bg-accent`).
+4. **3 nút Technical Projects/Resume/Photography quá nhỏ** → viết lại `HeroRoutes.js`: đổi bố cục từ xếp dọc (icon trên, chữ dưới) sang dạng thanh ngang (icon trái, chữ phải) rõ ràng là 1 button — có viền, nền mờ, bo góc. Hover chuyển nền sang xanh dương (`bg-accent`) bằng hiệu ứng "cửa sổ mở ra": 1 lớp phủ màu xanh nằm sẵn bên trong nút ở trạng thái `scale-x-0` (thu về 0 bề rộng, neo bên trái), khi hover phóng ra `scale-x-100` như rèm/cửa kéo mở từ trái sang phải. Đồng thời bỏ đoạn gradient đen thứ 2 ở phía phải Hero (không cần nữa vì bản thân nút đã có nền riêng đủ tương phản) và đổi nhãn "Resume" thành "About" (href vẫn `/about`).
+5. **Câu giới thiệu không nên nói "đang tìm việc full-time"** → sửa `profile.tagline` trong `data/profile.js` từ "...seeking full-time Network, IT Support or Helpdesk roles in Australia" thành câu chung chung hơn: "Master of IT graduate specialising in Network and Cybersecurity, based in Adelaide, Australia." (dùng chung cho cả Hero và thẻ meta description ở `layout.js`).
+6. **Thêm timeline ở cuối trang với các cột mốc Home/Technical Projects/Photography/About/Get in touch** → thay hẳn hàng chấm tròn đơn giản trước đó bằng 1 timeline có đường kẻ ngang nối liền + node tại mỗi card + nhãn tên bên dưới (ẩn nhãn ở mobile, chỉ còn chấm+đường kẻ cho gọn). `CardSlider.js` nhận thêm prop `labels`, `app/page.js` truyền vào `["Home", "Technical Projects", "Photography", "About", "Get in touch"]`.
+
+**Bug thật thứ 2 phát hiện trong lúc kiểm tra kỹ (khác với bug `pointercancel` đã sửa trước đó):** sau khi làm nút "About"/"Technical Projects"/"Photography" to và rõ ràng hơn (mục 4), kéo chuột bắt đầu **ngay trên các nút này** lại không chuyển card được nữa dù không báo lỗi gì — khác với bug trước (không phải do 2 nơi cùng chỉnh `transform` nữa, vì đã có chặn `e.buttons !== 0`). Nguyên nhân lần này: thẻ `<a>`/`<Link>` trong trình duyệt (Chrome) **mặc định cho phép kéo-thả gốc** (native drag — kiểu kéo 1 link ra ngoài để tạo bookmark) — khi bắt đầu kéo đúng trên 1 link, trình duyệt hiểu nhầm thành đang kéo-thả cái link đó thay vì tiếp tục gửi sự kiện con trỏ cho slider, nên sự kiện `pointermove` ngừng hẳn (không có `pointercancel`, không có lỗi — chỉ đơn giản là các sự kiện không tới nữa). **Cách sửa**: thêm `draggable={false}` vào các thẻ `Link`/`a` ở `HeroRoutes.js` và `CircleButton.js` để tắt hẳn hành vi kéo-thả gốc của trình duyệt trên các phần tử này.
+- Đã kiểm tra lại: lint/build sạch, kéo chuột với khoảng cách lớn bắt đầu chính xác trên nút "About" (đo toạ độ thật bằng `getBoundingClientRect`) chuyển card đúng, không lỗi console; Reduce Motion, Nav vắng/hiện đúng theo trang, vuốt chạm di động vẫn hoạt động bình thường sau khi sửa.
+
+---
+
+## C5. Nền động dạng mạng lưới network/cyber phía sau các card (2026-09-15, cùng ngày)
+
+Ricky thấy nền xám đen đặc (`bg-[#222225]`) hơi nhàm chán, muốn có hoạ tiết chuyển động liên quan đến cyber/network và yêu cầu rõ "phải thật đẹp".
+
+**Đã làm — `components/landing/NetworkBackground.js` (mới)**: nền động dạng lưới mạng vẽ bằng `<canvas>` thuần (không dùng thư viện ngoài như particles.js):
+- Các "node" (chấm tròn nhỏ) trôi chậm, ngẫu nhiên, dội ngược lại khi chạm biên màn hình — số lượng node co giãn theo kích thước màn hình (34 ở mobile, 55 tablet, 75 desktop) để không nặng máy ở điện thoại.
+- Node nào đủ gần nhau tự động nối bằng 1 đường kẻ mờ, độ đậm giảm dần theo khoảng cách — đúng hiệu ứng "mạng lưới" kinh điển.
+- Thỉnh thoảng sinh ra 1 "gói tin" (chấm sáng màu xanh accent của site, có glow) chạy dọc theo 1 đường nối ngẫu nhiên rồi biến mất — mô phỏng dữ liệu di chuyển qua mạng, đúng tinh thần "cyber/network".
+- Thêm 1 lớp phủ gradient hình tròn (`radial-gradient`) ở giữa để hoạ tiết mờ dần ra 2 bên/góc màn hình, không cạnh tranh thị giác với các card ở giữa — card vẫn luôn là tâm điểm.
+- Tự tạm dừng hẳn animation khi tab trình duyệt không hiển thị (`document.visibilitychange`) để tiết kiệm pin/CPU, và tắt hẳn chuyển động khi bật Reduce Motion (chỉ vẽ 1 khung hình tĩnh — node+đường nối, không có gói tin chạy — thay vì animate liên tục).
+- Đặt `pointer-events-none` nên không ảnh hưởng gì đến việc kéo/vuốt/bấm nút của slider.
+- Đã kiểm tra: lint/build sạch, canvas vẽ đúng kích thước theo viewport, xác nhận animation thực sự chuyển động (so sánh 2 khung hình cách nhau 1.5s, thấy rõ gói tin xanh di chuyển + node đổi vị trí), Reduce Motion đứng yên đúng, hiển thị tốt cả mobile, không lỗi console, không ảnh hưởng tương tác của slider.
+
+---
+
+## C6. Mũi tên trái/phải đổi theo đúng phong cách nút Gallery (2026-09-15, cùng ngày)
+
+Ricky muốn 2 nút điều hướng trái/phải của CardSlider trông và hoạt động giống hệt nút "Gallery" ở trang Photography (`components/photography/Gallery.js`) — vòng tròn to, có hiệu ứng pulse lan toả, bám nhẹ theo chuột (magnetic hover).
+
+**Đã làm:**
+- Áp dụng đúng 3 đặc điểm của nút Gallery cho 2 mũi tên: vòng pulse lan toả phía sau (`gallery-pulse`, dùng lại đúng class CSS đã có sẵn — không tạo mới vì bản chất là hiệu ứng chung, không riêng gì Gallery), phóng to nhẹ khi hover (`group-hover:scale-105`), và bám theo chuột (magnetic hover) khi rê gần — dùng đúng công thức tính offset đã dùng ở `CircleButton.js`/`Gallery.js`/`HeroRoutes.js`.
+- Kích thước tăng từ `h-12 w-12` lên `h-16 w-16 sm:h-20 sm:w-20` (nhỏ hơn nút Gallery gốc `h-24/h-28` một chút vì đây là 2 nút điều hướng luôn hiện diện trên mọi card, không phải 1 nút gọi-hành-động đơn lẻ — giữ tỷ lệ hợp lý hơn nếu để full size).
+- Đổi từ cách ẩn bằng `disabled:opacity-0` sang **không render hẳn** nút khi đang ở slide đầu/cuối (thay vì chỉ làm mờ) — sạch hơn cho accessibility (không còn nút disabled lửng lơ trong tab order).
+- **Lỗi lint mới gặp lần đầu trong dự án**: `react-hooks/refs` — không cho phép truyền thẳng 1 ref làm tham số của hàm ngay trong lúc render (kiểu `onMouseMove={handleMove(someRef)}`), dù ref đó chỉ thực sự được đọc bên trong hàm con (không đọc ngay lúc gọi). Sửa bằng cách viết 2 handler riêng biệt không nhận tham số (`handlePrevMouseMove`, `handleNextMouseMove`), mỗi hàm tự đóng gói đúng 1 ref của mình — khớp đúng cách `CircleButton.js`/`Gallery.js`/`HeroRoutes.js` đã làm từ trước (không truyền ref qua tham số hàm).
+- Đã kiểm tra: lint/build sạch, nút trái vắng mặt đúng ở slide đầu, nút phải vắng mặt đúng ở slide cuối, hiệu ứng bám chuột hoạt động đúng (so sánh ảnh chụp trước/sau khi rê chuột lệch tâm), pulse tắt đúng khi bật Reduce Motion nhưng vẫn điều hướng được bình thường, không lỗi console.
+
+---
+
+## C7. Ảnh thật cho card Photography + đổi toàn bộ nút CTA từ hình tròn sang chữ nhật bo góc (2026-09-15, cùng ngày)
+
+**Ảnh Photography**: Ricky gửi `Photocard.jpg` (ảnh phong cảnh đồng quê Nam Úc lúc hoàng hôn, con đường xuyên cánh đồng, hàng rào 2 bên, bầu trời chuyển màu xanh-hồng-vàng rất đẹp — ảnh gốc 7008×4117px, ~16MB) yêu cầu dùng cho card Photography, "phải thật đẹp và chuyên nghiệp".
+- Xử lý ảnh theo đúng quy trình đã thiết lập: xoay theo EXIF, resize xuống 2200px cạnh dài, nén WebP chất lượng 88 → còn ~320KB, lưu tại `public/photos/photography-card.webp`, xoá ảnh gốc khỏi thư mục dự án.
+- Viết lại `PhotographyPreview.js` theo đúng kỹ thuật đã dùng cho Hero: ảnh phủ toàn bộ card (`fill` + `object-cover`), gradient đen từ trái (giữ vùng chữ dễ đọc) tận dụng đúng vùng trời tối tự nhiên bên trái của ảnh gốc — không cần làm tối nhân tạo nhiều, giữ được màu hoàng hôn ấm áp bên phải.
+
+**Đổi nút CTA sang hình chữ nhật bo góc**: Ricky thấy các nút tròn ("View all projects", "View photography"...) không đủ nổi bật, muốn đổi thành nút chữ nhật bo góc, nằm ở cuối mỗi card, nổi bật hơn.
+- **Component mới `components/landing/PillButton.js`** — không sửa trực tiếp `CircleButton.js` vì component đó vẫn đang dùng ở trang `/photography` thật (nút tròn "Explore Memory Lane" chưa ai yêu cầu đổi) — tách riêng để không ảnh hưởng ngoài ý muốn. `PillButton` giữ đúng hiệu ứng bám chuột (magnetic hover) đã dùng ở `CircleButton`, nhưng đổi hình dạng: `rounded-2xl`, chữ đậm cỡ lớn, có mũi tên hiện ra khi hover, đổ bóng đậm để nổi hẳn trên nền đen.
+- Màu sắc phân cấp rõ: 3 nút "xem thêm" (Projects/Photography/About) dùng nền trắng ngà (`bg-dark-text`) + chữ đen — tương phản mạnh nhất có thể trên nền đen của card; riêng nút "Get in touch" ở card Contact giữ màu xanh accent (`variant="accent"`) để vẫn là điểm nhấn khác biệt, đúng vai trò lời gọi hành động chính của cả trải nghiệm.
+- Bố cục lại 4 card (`ProjectsPreview.js`, `PhotographyPreview.js`, `AboutPreview.js`, `ContactCTA.js`): tách nút ra khỏi khối nội dung chính, đặt ở 1 hàng riêng dưới cùng (dùng `flex-1` cho khối nội dung để tự đẩy phần nút xuống đúng đáy card) — đúng yêu cầu "nằm ở bottom của card" thay vì chỉ "nằm sau đoạn văn bản, tình cờ gần cuối".
+- Đã kiểm tra: lint/build sạch, cả 4 nút hiển thị đúng vị trí/màu trên từng card, link đích đúng (`/projects`, `/photography`, `/about`, `mailto:`), không lỗi console, hiển thị tốt trên mobile (nút vẫn có thể cuộn tới được dù card hơi nhiều nội dung — hạn chế mobile đã ghi nhận từ trước, không phải lỗi mới).
+
 ---
 
 ## D. Trang Photography — ✅ Xong (2026-09-14)
@@ -179,6 +322,15 @@ Ricky cung cấp 1 file Word (`story/story.docx`, đã xoá sau khi xử lý xon
 - **Viết lại lần 2 theo yêu cầu "humanize"**: Ricky gửi bộ nguyên tắc phát hiện văn phong AI (tài liệu Wikipedia WP:AITELL) và yêu cầu áp dụng cho toàn bộ nội dung vừa viết. Đã lưu thành memory `humanizer` (áp dụng cho mọi nội dung dài viết sau này, không chỉ trang này) và viết lại câu chuyện: bỏ các dấu hiệu văn AI (từ vựng sáo rỗng như "underscore/testament/vibrant", câu đối lập kiểu "not just X but Y", liệt kê 3 vế ép buộc, gạch ngang em-dash lặp lại, thay is/was bằng serves as/stands as...) — giữ nguyên nghĩa và sự kiện, không thêm thông tin mới. Câu nói của bà ngoại (trích dẫn trực tiếp) giữ nguyên không đổi.
 
 **Việc còn lại:** Ricky sẽ tạo các project riêng trong mục nhiếp ảnh sau (không phải bây giờ). Câu chuyện tiếng Anh đã gửi kèm bản dịch tiếng Việt cho Ricky xem lại (xem cuối cuộc trò chuyện lúc bàn giao).
+
+**Thêm phần 07 — Champion Wildlife Print, Royal Adelaide Show 2026 (2026-09-16):** Ricky thả 3 ảnh mới vào `gallery-inbox/` (không phải để đưa vào Gallery cá nhân — lần này dùng cho STORY) và kể: ngày 5/9/2026 (ngày đầu Royal Adelaide Show), ảnh "Little Gull" của anh đoạt giải Champion Wildlife Print in Show — 1 cột mốc mới trong hành trình.
+
+- 3 ảnh: ảnh gốc "Little Gull" (con mòng biển lúc hoàng hôn), ảnh cận cảnh ruy băng giải thưởng + nhãn triển lãm (ghi rõ tên Ricky), và ảnh Ricky đứng cạnh tác phẩm đoạt giải tại triển lãm.
+- Ricky lưu ý: trước đây đôi khi giữ đúng tỷ lệ gốc làm bố cục không đẹp, lần này **cho phép crop tự do** để bố cục hợp lý hơn. Đã crop ảnh Ricky-đứng-tại-triển-lãm (gốc 5712×3213, rất rộng) — cắt bớt khoảng đen thừa 2 bên và bức ảnh thứ 3 gây phân tán ở rìa phải, giữ lại đúng Ricky + tác phẩm đoạt giải + ruy băng. Ảnh "Little Gull" và ảnh cận cảnh ruy băng giữ nguyên bố cục gốc (đã đẹp sẵn).
+- Xử lý theo đúng quy trình cũ (EXIF-transpose, resize 2000px cạnh dài, nén WebP ~85), lưu thành `photo16/17/18.webp` (nối tiếp số thứ tự ảnh story hiện có), xoá ảnh gốc khỏi `gallery-inbox/`.
+- Viết thêm mục "07 — September 2026: Champion Wildlife Print" vào cuối story (trước CTA đóng trang) — theo đúng văn phong "humanize" đã thống nhất: giữ đúng sự thật (ngày 5/9, tên giải, tên ảnh "Little Gull"), không tự bịa thêm chi tiết không xác nhận được (ví dụ không tự thêm "lần đầu tham gia cuộc thi" vì Ricky không nói rõ điều đó), giọng văn khiêm tốn/chân thật khớp với "tôi vinh dự được là champion" mà Ricky dùng, không phóng đại.
+- Bố cục ảnh: ảnh "Little Gull" đặt lớn, nổi bật ngay sau đoạn văn (vì đây chính là tác phẩm đoạt giải); 2 ảnh còn lại (Ricky tại triển lãm + cận cảnh ruy băng) xếp cạnh nhau thành 1 hàng ngang bên dưới.
+- Đã kiểm tra: lint/build sạch, cuộn qua toàn trang bằng script (đúng theo gotcha Reveal/IntersectionObserver đã ghi nhận trước đây, không dùng flag `--full-page` trần), cả 3 ảnh tải đúng không vỡ, đúng 1 `h1`, tính năng Gallery cá nhân (mục D2) không bị ảnh hưởng, hiển thị tốt cả mobile.
 
 ---
 
@@ -250,6 +402,9 @@ Dark mode, blog, CMS, analytics, custom domain, contact-form backend thật, aut
 | 2026-09-14 | Thêm intro splash (màn hình chào đen, 1.5s, chỉ hiện 1 lần/phiên tab) trước khi vào Home |
 | 2026-09-14 | Thêm Gallery ảnh cá nhân ở trang Photography, kèm quy trình `gallery-inbox/` + script nén ảnh tự động để Ricky tự thêm ảnh về sau |
 | 2026-09-14 | Tạo `lib/scrollLock.js` dùng chung cho mọi overlay khoá cuộn trang (IntroSplash/Nav/Gallery) — tránh lỗi ghi đè lẫn nhau khi 2 overlay hoạt động cùng lúc |
+| 2026-09-14 | Gallery ảnh dùng prop `unoptimized` trên `next/image` để né race condition thật trong bộ tối ưu ảnh của Next.js (xem mục D2) |
+| 2026-09-14 | Hero bỏ layout ảnh full-bleed, ảnh thu nhỏ lại làm yếu tố phụ, ưu tiên headline/tagline/chứng chỉ lên trước — theo phản hồi từ bạn của Ricky rằng ảnh mặt che mất tín hiệu năng lực. Bỏ hẳn marquee tên chạy ngang trên ảnh (chi tiết personal-brand không cần thiết cho mục tiêu xin việc IT) |
+| 2026-09-14 | Hero đổi hướng lần nữa (cùng ngày, theo yêu cầu trực tiếp của Ricky): ảnh lớn trở lại, nhưng dạng "khung đen chuyển gradient sang ảnh" — giữ tinh thần "nội dung nổi bật" bằng tương phản mạnh thay vì ảnh nhỏ. Thêm hoạ tiết mạch điện/network + icon bảo mật tự vẽ (SVG, không dùng thư viện ngoài) chạy phía sau nội dung. Nav chuyển thành overlay trong suốt trên Hero — chỉ áp dụng ở Home, các trang khác không đổi |
 
 ---
 

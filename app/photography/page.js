@@ -303,6 +303,49 @@ export default function PhotographyPage() {
         />
       </Reveal>
 
+      {/* 07 — Royal Adelaide Show */}
+      <Reveal className="mx-auto flex max-w-[1000px] flex-col gap-8 px-[var(--page-x)] py-14 sm:py-20">
+        <div className="flex flex-col gap-4">
+          <p className="text-xs tracking-[0.14em] text-muted uppercase">07 — September 2026</p>
+          <h2 className="text-2xl font-normal tracking-tight sm:text-3xl">Champion Wildlife Print</h2>
+          <p className="max-w-2xl leading-relaxed text-muted">
+            On 5 September, the first day of the Royal Adelaide Show, one of my photos won Champion
+            Wildlife Print in Show. I called it Little Gull: a seagull standing on the sand at
+            sunset, looking straight at the camera. I took it on an ordinary evening at the beach,
+            the kind of photo where the light was good and the bird happened to hold still.
+          </p>
+          <p className="max-w-2xl leading-relaxed text-muted">
+            Seeing it framed on the exhibition wall with a ribbon next to it was a strange feeling.
+            Fourteen years after I bought that second-hand Nikon D90, a photo of a bird on a beach
+            reminded me why I started carrying a camera around in the first place.
+          </p>
+        </div>
+
+        <StoryPhoto
+          src="/photos/photography/photo16.webp"
+          alt="Little Gull, the award-winning photo of a seagull standing on the sand at sunset"
+          width={1361}
+          height={1022}
+          caption="Little Gull, Champion Wildlife Print in Show"
+          className="mx-auto w-full sm:w-4/5"
+        />
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
+          <StoryPhoto
+            src="/photos/photography/photo17.webp"
+            alt="Ricky standing beside his winning print and ribbon at the Royal Adelaide Show exhibition"
+            width={2000}
+            height={1714}
+          />
+          <StoryPhoto
+            src="/photos/photography/photo18.webp"
+            alt="Close-up of the Champion Wildlife Print in Show ribbon and exhibit label"
+            width={1927}
+            height={2000}
+          />
+        </div>
+      </Reveal>
+
       {/* Closing CTA */}
       <Reveal className="mx-auto flex max-w-[1000px] flex-col items-start gap-6 px-[var(--page-x)] py-16 sm:flex-row sm:items-center sm:justify-between sm:py-24">
         <p className="max-w-md text-xl leading-snug font-normal tracking-tight">

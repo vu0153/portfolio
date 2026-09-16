@@ -5,7 +5,7 @@ const profile = {
   headlineItems: ["Network", "Cybersecurity", "IT Support"],
   location: "Adelaide, South Australia",
   tagline:
-    "Master of IT graduate (Network & Cybersecurity) seeking full-time Network, IT Support or Helpdesk roles in Australia.",
+    "Master of IT graduate specialising in Network and Cybersecurity, based in Adelaide, Australia.",
   summary:
     "I bring over 5 years of hands-on Network Operations Center experience in the telecommunications industry, now backed by a Master of IT majoring in Network and Cybersecurity Systems from Flinders University. I'm comfortable configuring and troubleshooting Cisco-based enterprise networks, and I've built academic projects covering intrusion detection, secure network design, and IT security governance. I'm also genuinely curious about technology beyond my core field — I built this very site myself while learning Next.js and React.",
 

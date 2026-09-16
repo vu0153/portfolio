@@ -3,20 +3,15 @@
 import Link from "next/link";
 import { useRef } from "react";
 
-const MAX_OFFSET = 10;
-const STRENGTH = 0.3;
+const MAX_OFFSET = 8;
+const STRENGTH = 0.25;
 
-export default function CircleButton({ href, children, variant = "dark", external = false }) {
+export default function PillButton({ href, children, variant = "dark", external = false }) {
   const ref = useRef(null);
-  const reducedMotionRef = useRef(false);
 
   const handleMouseMove = (e) => {
     if (typeof window === "undefined") return;
-    reducedMotionRef.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (reducedMotionRef.current) return;
-    // Ignore while a button is held: an active drag elsewhere (e.g. the card
-    // slider) also mutates transforms, and fighting over style during a
-    // pointer session causes Chromium to cancel it.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     if (e.buttons !== 0) return;
 
     const el = ref.current;
@@ -26,7 +21,6 @@ export default function CircleButton({ href, children, variant = "dark", externa
     const relY = e.clientY - (rect.top + rect.height / 2);
     const x = Math.max(-MAX_OFFSET, Math.min(MAX_OFFSET, relX * STRENGTH));
     const y = Math.max(-MAX_OFFSET, Math.min(MAX_OFFSET, relY * STRENGTH));
-    // Snappy while actively tracking the cursor...
     el.style.transitionDuration = "90ms";
     el.style.transform = `translate(${x}px, ${y}px)`;
   };
@@ -34,17 +28,25 @@ export default function CircleButton({ href, children, variant = "dark", externa
   const handleMouseLeave = () => {
     const el = ref.current;
     if (!el) return;
-    // ...slower, springier settle back to rest.
     el.style.transitionDuration = "350ms";
     el.style.transform = "";
   };
 
-  const classes =
-    variant === "accent"
-      ? "bg-accent text-dark-text"
-      : "bg-dark text-dark-text";
+  const classes = variant === "accent" ? "bg-accent text-dark-text" : "bg-dark-text text-black";
 
-  const className = `inline-flex h-28 w-28 shrink-0 items-center justify-center rounded-full text-center text-sm leading-tight tracking-[0.02em] transition-transform [transition-timing-function:var(--ease-out)] hover:scale-105 sm:h-32 sm:w-32 ${classes}`;
+  const className = `group inline-flex items-center gap-3 rounded-2xl px-7 py-4 text-base font-semibold tracking-[0.01em] shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-transform [transition-timing-function:var(--ease-out)] hover:scale-105 sm:px-9 sm:py-5 sm:text-lg ${classes}`;
+
+  const content = (
+    <>
+      {children}
+      <span
+        aria-hidden
+        className="transition-transform duration-300 [transition-timing-function:var(--ease-out)] group-hover:translate-x-1"
+      >
+        →
+      </span>
+    </>
+  );
 
   if (external) {
     return (
@@ -58,7 +60,7 @@ export default function CircleButton({ href, children, variant = "dark", externa
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
       >
-        {children}
+        {content}
       </a>
     );
   }
@@ -72,7 +74,7 @@ export default function CircleButton({ href, children, variant = "dark", externa
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >
-      {children}
+      {content}
     </Link>
   );
 }

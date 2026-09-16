@@ -1,17 +1,20 @@
+import CardSlider from "@/components/landing/CardSlider";
 import LandingHero from "@/components/landing/LandingHero";
-import IntroStatement from "@/components/landing/IntroStatement";
 import ProjectsPreview from "@/components/landing/ProjectsPreview";
 import PhotographyPreview from "@/components/landing/PhotographyPreview";
+import AboutPreview from "@/components/landing/AboutPreview";
 import ContactCTA from "@/components/landing/ContactCTA";
+
+const labels = ["Home", "Technical Projects", "Photography", "About", "Get in touch"];
 
 export default function Home() {
   return (
-    <>
+    <CardSlider labels={labels}>
       <LandingHero />
-      <IntroStatement />
       <ProjectsPreview />
       <PhotographyPreview />
+      <AboutPreview />
       <ContactCTA />
-    </>
+    </CardSlider>
   );
 }

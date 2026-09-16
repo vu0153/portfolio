@@ -1,4 +1,4 @@
-import CircleButton from "./CircleButton";
+import PillButton from "./PillButton";
 import Reveal from "./Reveal";
 
 const featuredProjects = [
@@ -8,57 +8,41 @@ const featuredProjects = [
   { title: "Health IT Governance (Acting CISO)", category: "Security Governance" },
 ];
 
-const otherProjects = [
-  { title: "Disaster Recovery and Business Continuity Plan", category: "Security Governance" },
-  { title: "Cloud-based Inventory Management System", category: "Cloud / Automation" },
-  { title: "Data Analytics Pipeline with R and MongoDB", category: "Data Analysis" },
-  { title: "Indigenous Art Atlas", category: "Web Development" },
-  { title: "AquaGuard IoT for Smart Aquaculture", category: "IoT / Project Management" },
-];
-
 export default function ProjectsPreview() {
   return (
-    <section className="bg-paper px-[var(--page-x)] py-20 text-ink sm:py-32">
-      <Reveal className="mx-auto flex max-w-[1800px] flex-col gap-10">
-        <div className="flex items-baseline justify-between text-xs tracking-[0.14em] text-muted uppercase">
-          <span>Selected Work</span>
-          <span>01 / Technical</span>
-        </div>
+    <section className="flex h-full flex-col bg-black px-[var(--page-x)] py-16 text-dark-text">
+      <div className="mx-auto flex w-full max-w-[1800px] flex-1 flex-col justify-center gap-10">
+        <Reveal className="flex flex-col gap-10">
+          <div className="flex items-baseline justify-between text-xs tracking-[0.14em] text-dark-text/50 uppercase">
+            <span>Selected Work</span>
+            <span>01 / Technical</span>
+          </div>
 
-        <h2
-          className="font-normal leading-[0.95] tracking-[-0.03em]"
-          style={{ fontSize: "clamp(2rem, 1.2rem + 3vw, 4rem)" }}
-        >
-          Technical Projects
-        </h2>
+          <h2
+            className="font-normal leading-[0.95] tracking-[-0.03em]"
+            style={{ fontSize: "clamp(2rem, 1.2rem + 3vw, 4rem)" }}
+          >
+            Technical Projects
+          </h2>
 
-        <Reveal as="ul" stagger className="flex flex-col divide-y divide-line border-t border-b border-line">
-          {featuredProjects.map((project) => (
-            <li key={project.title} className="flex flex-col gap-1 py-5 sm:flex-row sm:items-baseline sm:justify-between">
-              <span className="text-lg">{project.title}</span>
-              <span className="text-sm tracking-[0.02em] text-muted">{project.category}</span>
-            </li>
-          ))}
+          <Reveal
+            as="ul"
+            stagger
+            className="flex flex-col divide-y divide-dark-text/15 border-t border-b border-dark-text/15"
+          >
+            {featuredProjects.map((project) => (
+              <li key={project.title} className="flex flex-col gap-1 py-5 sm:flex-row sm:items-baseline sm:justify-between">
+                <span className="text-lg">{project.title}</span>
+                <span className="text-sm tracking-[0.02em] text-dark-text/60">{project.category}</span>
+              </li>
+            ))}
+          </Reveal>
         </Reveal>
+      </div>
 
-        <p className="text-xs tracking-[0.14em] text-muted uppercase">Other Projects</p>
-
-        <Reveal as="ul" stagger className="flex flex-col divide-y divide-line border-t border-b border-line">
-          {otherProjects.map((project) => (
-            <li
-              key={project.title}
-              className="flex flex-col gap-1 py-4 text-muted sm:flex-row sm:items-baseline sm:justify-between"
-            >
-              <span>{project.title}</span>
-              <span className="text-sm tracking-[0.02em]">{project.category}</span>
-            </li>
-          ))}
-        </Reveal>
-
-        <div className="flex justify-end">
-          <CircleButton href="/projects">View all projects</CircleButton>
-        </div>
-      </Reveal>
+      <div className="mx-auto flex w-full max-w-[1800px] justify-end">
+        <PillButton href="/projects">View all projects</PillButton>
+      </div>
     </section>
   );
 }
